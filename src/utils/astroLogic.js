@@ -1,13 +1,13 @@
 export const calcularScore = (data) => {
   // Extraemos y aseguramos que sean números con Number() o || 0
-  const nubosidadBaja = Number(data?.nubosidadBaja) || 0;
+  const nubosidad = Number(data?.nubosidad) || 0;
   const jetstream = Number(data?.jetstream) || 0;
   const faseLunar = Number(data?.faseLunar) || 0;
   const altitud = Number(data?.altitud) || 3700;
   const bortle = Number(data?.bortle) || 4;
 
   // Normalización (Valores entre 0 y 1)
-  const norm_nubosidad = 1 - (nubosidadBaja / 100);
+  const norm_nubosidad = 1 - (nubosidad / 100);
   const norm_jetstream = 1 - (Math.min(jetstream, 60) / 60);
   const norm_bortle    = 1 - ((bortle - 1) / 8);
   const norm_lunar     = 1 - (faseLunar / 100);

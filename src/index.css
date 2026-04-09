@@ -1,7 +1,42 @@
 @import "tailwindcss";
 
+@theme {
+  /* Fondos neumórficos */
+  --color-neu-base:   #0d0f1a;
+  --color-neu-raised: #111520;
+  --color-neu-sunken: #090b14;
+  --color-neu-border: #1e2040;
+  --color-neu-glow:   #1a1d35;
+  --color-neu-shadow: #06070f;
+
+  /* Paleta astronómica */
+  --color-astro-sky:     #7ecfff;
+  --color-astro-blue:    #4a9eff;
+  --color-astro-deep:    #2d6be4;
+  --color-astro-nebula:  #a78bfa;
+  --color-astro-void:    #7c3aed;
+  --color-astro-horizon: #fb923c;
+  --color-astro-ember:   #f59e0b;
+  --color-astro-text:    #c8d8f0;
+  --color-astro-muted:   #5a7090;
+  --color-astro-dim:     #3a4a60;
+
+  /* Sombras neumórficas */
+  --shadow-neu:         -4px -4px 8px #1a1d35, 4px 4px 8px #06070f;
+  --shadow-neu-sm:      -2px -2px 5px #1a1d35, 2px 2px 5px #06070f;
+  --shadow-neu-lg:      -6px -6px 14px #1a1d35, 6px 6px 14px #06070f;
+  --shadow-neu-inset:   inset -2px -2px 5px #1a1d35, inset 2px 2px 5px #06070f;
+  --shadow-neu-pressed: inset -1px -1px 3px #1a1d35, inset 1px 1px 3px #06070f;
+  --shadow-neu-sky:     -4px -4px 8px #1a1d35, 4px 4px 8px #06070f, 0 0 20px rgba(126,207,255,0.10);
+  --shadow-neu-nebula:  -4px -4px 8px #1a1d35, 4px 4px 8px #06070f, 0 0 20px rgba(167,139,250,0.10);
+  --shadow-neu-horizon: -4px -4px 8px #1a1d35, 4px 4px 8px #06070f, 0 0 20px rgba(251,146,60,0.10);
+
+  /* Tipografía */
+  --font-mono: "JetBrains Mono", "Space Mono", monospace;
+}
+
 .map-container {
-  height: 100vh; 
+  height: 100vh;
   width: 100%;
 }
 

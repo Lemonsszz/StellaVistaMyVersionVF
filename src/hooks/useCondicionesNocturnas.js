@@ -12,20 +12,44 @@ export const useCondicionesNocturnas = () => {
       if (!coordinates.lat || !coordinates.lng) return null;
 
       try {
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${coordinates.lat}&longitude=${coordinates.lng}&current=cloud_cover_low,wind_speed_200hPa&timezone=auto`;
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${coordinates.lat}&longitude=${coordinates.lng}&current=cloud_cover,wind_speed_200hPa&hourly=cloud_cover,wind_speed_200hPa&forecast_days=1&timezone=auto`;
         
         const res = await fetch(url);
         if (!res.ok) throw new Error('Error API');
         
         const data = await res.json();
+        
         const luna = SunCalc.getMoonIllumination(new Date());
+
+        // Construimos el pronóstico horario — próximas 8 horas
+
+
+        const ahora = new Date();
+        
+        const forecast = data.hourly.time
+          .map((tiempo, i) => ({
+            hora:      tiempo.slice(11, 16), // "HH:MM"
+            nubosidad: data.hourly.cloud_cover[i],
+            jetstream: data.hourly.wind_speed_200hPa[i],
+          }))
+          .filter(({ hora }) => {
+            // Solo horas desde ahora en adelante
+            const [h, m] = hora.split(':').map(Number);
+            const horaItem = new Date();
+            horaItem.setHours(h, m, 0, 0);
+            return horaItem >= ahora;
+          })
+          .slice(0, 8); // máximo 8 franjas
 
         // IMPORTANTE: Estructura exacta que espera App.jsx
         return {
-          nubosidadBaja: data.current?.cloud_cover_low ?? 0,
+          nubosidad: data.current?.cloud_cover ?? 0,
           jetstream: data.current?.wind_speed_200hPa ?? 0,
           altitud: data.elevation ?? 3700,
-          faseLunar: (luna.fraction * 100) || 0
+          faseLunar: (luna.fraction * 100) || 0,
+          lunaFase: luna.phase,
+          bortle: 4,
+          forecast,
         };
       } catch (err) {
         console.error("Error en Fetch:", err);
