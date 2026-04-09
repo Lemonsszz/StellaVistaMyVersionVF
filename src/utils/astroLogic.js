@@ -4,7 +4,7 @@ export function calcularScore({ nubosidadBaja, jetstream, bortle, faseLunar, alt
   const norm_jetstream = 1 - (Math.min(jetstream, 60) / 60) //velocidad del viento (condición máx. 60km/h)
   const norm_bortle    = 1 - ((bortle - 1) / 8) //escala 1-9
   const norm_lunar     = 1 - (faseLunar / 100) // 
-  const norm_altitud   = altitud / 7000
+  const norm_altitud   = Math.min(altitud / 5000, 1);
 
   const score =
     (norm_nubosidad * 0.35) +
@@ -13,5 +13,11 @@ export function calcularScore({ nubosidadBaja, jetstream, bortle, faseLunar, alt
     (norm_jetstream * 0.10) +
     (norm_altitud   * 0.05)
 
-  return score
-}
+  return Math.round(score * 100);
+};
+
+export const getColorSemforo = (score) => {
+  if (score >= 80) return 'text-green-500';
+  if (score >= 50) return 'text-yellow-500';
+  return 'text-red-500';
+};
