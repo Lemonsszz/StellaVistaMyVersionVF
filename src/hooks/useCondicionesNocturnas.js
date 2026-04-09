@@ -6,30 +6,33 @@ export const useCondicionesNocturnas = () => {
   const { coordinates } = useAstroStore();
 
   return useQuery({
-    // La Query Key depende de las coordenadas
     queryKey: ['clima-astro', coordinates.lat, coordinates.lng],
-    
     queryFn: async () => {
-      // VALIDACIÓN: Si no hay coordenadas, no disparamos la petición
+      // Si no hay coordenadas, no hacemos nada
       if (!coordinates.lat || !coordinates.lng) return null;
 
-      const url = `,https://open-meteo.com{coordinates.lat}&longitude=${coordinates.lng}&current=cloud_cover_low,wind_speed_200hPa&timezone=auto`; //api.open-meteo.com/v1/fore
-      
-      const res = await fetch(url);
-      const data = await res.json();
+      try {
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${coordinates.lat}&longitude=${coordinates.lng}&current=cloud_cover_low,wind_speed_200hPa&timezone=auto`;
+        
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('Error API');
+        
+        const data = await res.json();
+        const luna = SunCalc.getMoonIllumination(new Date());
 
-      const luna = SunCalc.getMoonIllumination(new Date());
-
-      return {
-        nubosidadBaja: data.current.cloud_cover_low,
-        jetstream: data.current.wind_speed_200hPa,
-        altitud: 3700, // Ponemos la base de Oruro fija por ahora para evitar el error 400
-        faseLunar: luna.fraction * 100,
-        bortle: 4 
-      };
+        // IMPORTANTE: Estructura exacta que espera App.jsx
+        return {
+          nubosidadBaja: data.current?.cloud_cover_low ?? 0,
+          jetstream: data.current?.wind_speed_200hPa ?? 0,
+          altitud: data.elevation ?? 3700,
+          faseLunar: (luna.fraction * 100) || 0
+        };
+      } catch (err) {
+        console.error("Error en Fetch:", err);
+        return null; // Si falla el fetch, devolvemos null para que App.jsx lo maneje
+      }
     },
-    // IMPORTANTE: Solo habilitar la query si tenemos coordenadas
-    enabled: !!coordinates.lat && !!coordinates.lng,
-    staleTime: 1000 * 60 * 5, 
+    enabled: !!coordinates.lat,
+    staleTime: 1000 * 60 * 5,
   });
 };
