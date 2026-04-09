@@ -13,6 +13,7 @@ import { LayerControl } from './components/LayerControl';
 import { CoordsPanel } from './components/CoordsPanel';
 import { AstroPanel }  from './components/AstroPanel';
 import { ForecastBar } from './components/ForecastBar';
+import { MapaInteractivo } from './components/MapaInteractivo';
 
 function App() {
   const { coordinates, setCoordinates, isRedMode } = useAstroStore();
@@ -46,17 +47,10 @@ function App() {
         </aside>
 
         {/* MAPA CENTRAL */}
-        <main className="flex-1 relative">
-          <Map
-            initialViewState={{
-              longitude: coordinates.lng,
-              latitude:  coordinates.lat,
-              zoom: 12
-            }}
-            style={{ width: '100%', height: '100%' }}
-            mapStyle={`https://api.maptiler.com/maps/dataviz-dark/style.json?key=${mapKey}`}
-            onClick={manejaClic}
-          />
+        <main className="flex-1 relative overflow-hidden">
+          
+            <MapaInteractivo onClic={manejaClic} />
+          
         </main>
 
         {/* COLUMNA DERECHA */}
