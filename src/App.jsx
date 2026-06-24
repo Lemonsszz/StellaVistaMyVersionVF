@@ -4,7 +4,7 @@
 // src/App.jsx
 import Map from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAstroStore } from './store/useAstroStore';
 import { useCondicionesNocturnas } from './hooks/useCondicionesNocturnas';
 import { Topbar }      from './components/Topbar';
@@ -14,11 +14,13 @@ import { CoordsPanel } from './components/CoordsPanel';
 import { AstroPanel }  from './components/AstroPanel';
 import { ForecastBar } from './components/ForecastBar';
 import { MapaInteractivo } from './components/MapaInteractivo';
+import { IntroWindow } from './components/IntroWindow';
 
 function App() {
   const { coordinates, setCoordinates, isRedMode } = useAstroStore();
   const { data, isLoading } = useCondicionesNocturnas();
   const mapKey = "ECRGZxLvLb4HTx76OnDg";
+  const [introVisible, setIntroVisible] = useState(true);
 
   // Modo nocturno — aplica filtro rojo a toda la app
   useEffect(() => {
@@ -63,6 +65,10 @@ function App() {
 
       {/* FILA 3 — Pronóstico */}
       <ForecastBar forecast={data?.forecast} dataActual={data} />
+
+      {introVisible && (
+        <IntroWindow onComplete={() => setIntroVisible(false)} />
+      )}
 
     </div>
   );

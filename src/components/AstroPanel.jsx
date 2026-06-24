@@ -4,6 +4,7 @@ import * as Astronomy from 'astronomy-engine';
 import { useAstroStore } from '../store/useAstroStore';
 import { useState } from 'react';
 import { Planetario } from './Planetario';
+import { SolarSystemWindow } from './SolarSystemWindow';
 
 const PLANETAS = [
   { key: 'Jupiter', label: 'Júpiter' },
@@ -132,6 +133,7 @@ export const AstroPanel = ({ faseLunar, lunaFase }) => {
     return 'Menguante final';
   })();
   const [planetarioAbierto, setPlanetarioAbierto] = useState(false);
+  const [sistemaSolarAbierto, setSistemaSolarAbierto] = useState(false);
   
   return (
     <aside className="w-56 bg-neu-base border-l border-neu-border flex flex-col shrink-0 overflow-y-auto">
@@ -221,10 +223,19 @@ export const AstroPanel = ({ faseLunar, lunaFase }) => {
       >
         Abrir planetario
       </button>
+      <button
+        onClick={() => setSistemaSolarAbierto(true)}
+        className="w-full mt-2 py-2.5 rounded-xl bg-neu-raised border border-neu-border shadow-neu-sm text-[9px] tracking-[0.15em] uppercase text-astro-horizon hover:text-astro-horizon/80 transition-colors"
+      >
+        Abrir sistema solar
+      </button>
     </div>
 
     {planetarioAbierto && (
       <Planetario onCerrar={() => setPlanetarioAbierto(false)} />
+    )}
+    {sistemaSolarAbierto && (
+      <SolarSystemWindow onCerrar={() => setSistemaSolarAbierto(false)} />
     )}
     </aside>
   );
