@@ -47,6 +47,9 @@ export const ScorePanel = ({ data, isLoading }) => {
     source: 'fallback-ui',
   };
   const bortleColor = getBortleColor(bortleInfo.bortle);
+  const distanceText = Number.isFinite(bortleInfo.distanceKm)
+    ? `, ${bortleInfo.distanceKm} km`
+    : '';
 
   return (
     <div className={`
@@ -120,8 +123,14 @@ export const ScorePanel = ({ data, isLoading }) => {
             {bortleInfo.confidence}
           </span>
         </div>
+        <p className="mt-1 text-[8px] leading-relaxed text-astro-muted">
+          Dominante: {bortleInfo.sourceName ?? bortleInfo.dominantSource ?? 'sin fuente'}{distanceText}
+        </p>
         <p className="mt-1 text-[8px] leading-relaxed text-astro-dim">
-          Bortle estimado localmente para Oruro. No usa API externa. Validable con mediciones SQM.
+          Modelo: {bortleInfo.modelScope ?? bortleInfo.source} - {bortleInfo.method}
+        </p>
+        <p className="mt-1 text-[8px] leading-relaxed text-astro-dim">
+          Estimacion local para prototipo. Calibrable con mediciones SQM.
         </p>
       </div>
     </div>

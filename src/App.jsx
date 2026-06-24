@@ -16,11 +16,15 @@ import { ForecastBar } from './components/ForecastBar';
 import { MapaInteractivo } from './components/MapaInteractivo';
 import { IntroWindow } from './components/IntroWindow';
 
+const INTRO_SESSION_KEY = 'stellavista:intro-complete';
+
 function App() {
   const { coordinates, setCoordinates, isRedMode } = useAstroStore();
   const { data, isLoading } = useCondicionesNocturnas();
   const mapKey = "ECRGZxLvLb4HTx76OnDg";
-  const [introVisible, setIntroVisible] = useState(true);
+  const [introVisible, setIntroVisible] = useState(() => {
+    return sessionStorage.getItem(INTRO_SESSION_KEY) !== 'true';
+  });
 
   // Modo nocturno — aplica filtro rojo a toda la app
   useEffect(() => {
@@ -30,6 +34,11 @@ function App() {
   const manejaClic = (evento) => {
     const { lng, lat } = evento.lngLat;
     setCoordinates({ lat, lng });
+  };
+
+  const completarIntro = () => {
+    sessionStorage.setItem(INTRO_SESSION_KEY, 'true');
+    setIntroVisible(false);
   };
 
   return (
@@ -67,7 +76,7 @@ function App() {
       <ForecastBar forecast={data?.forecast} dataActual={data} />
 
       {introVisible && (
-        <IntroWindow onComplete={() => setIntroVisible(false)} />
+        <IntroWindow onComplete={completarIntro} />
       )}
 
     </div>

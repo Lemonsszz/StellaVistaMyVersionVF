@@ -8,9 +8,16 @@ export const Topbar = ({ coordinates }) => {
     <header className="w-full h-10 bg-neu-base flex items-center px-4 gap-4 border-b border-neu-border shadow-neu-sm font-mono">
       
       {/* Logo */}
-      <span className="text-xs font-bold tracking-[0.18em] uppercase text-astro-sky">
-        StellaVista
-      </span>
+      <div className="flex items-center min-w-[190px]">
+        <img
+          src="/logo-stellavista.png"
+          alt="StellaVista"
+          className="h-9 w-auto max-w-[180px] object-contain"
+          onError={(event) => {
+            event.currentTarget.style.display = 'none';
+          }}
+        />
+      </div>
 
       <div className="w-px h-4 bg-neu-border" />
 

@@ -101,6 +101,42 @@
       background-clip: text;
       animation: titleGlow 4s ease-in-out infinite alternate;
     }
+
+    .welcome-brand {
+      min-height: clamp(58px, 10vw, 96px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: -0.8rem;
+    }
+
+    .welcome-logo {
+      height: clamp(54px, 9vw, 92px);
+      max-width: min(520px, 82vw);
+      object-fit: contain;
+      filter:
+        drop-shadow(0 0 12px rgba(77,159,255,0.35))
+        drop-shadow(0 0 26px rgba(167,139,250,0.28));
+    }
+
+    .welcome-logo-fallback {
+      display: none;
+      font-family: 'Orbitron', monospace;
+      font-weight: 900;
+      font-size: clamp(1.4rem, 5vw, 3rem);
+      letter-spacing: 0.28em;
+      color: #a78bfa;
+      text-shadow: 0 0 22px rgba(167,139,250,0.55);
+    }
+
+    .welcome-brand.logo-missing .welcome-logo {
+      display: none;
+    }
+
+    .welcome-brand.logo-missing .welcome-logo-fallback {
+      display: block;
+    }
+
     @keyframes titleGlow {
       from { filter: drop-shadow(0 0 10px rgba(77,159,255,0.3)); }
       to   { filter: drop-shadow(0 0 24px rgba(167,139,250,0.7)); }
@@ -307,6 +343,7 @@
     ============================================================ */
     @media (max-width: 480px) {
       .main-title { letter-spacing: 0.18em; }
+      .welcome-logo-fallback { letter-spacing: 0.16em; }
       #launch-btn { padding: 0.8rem 2rem; font-size: 0.7rem; }
     }
   </style>
@@ -338,7 +375,16 @@
     </svg>
   </div>
 
-  <h1 class="main-title">BIENVENIDO COSMONAUTA</h1>
+  <h1 class="main-title">BIENVENIDO COSMONAUTA A</h1>
+  <div class="welcome-brand">
+    <img
+      class="welcome-logo"
+      src="/logo-stellavista.png"
+      alt="StellaVista"
+      onerror="this.parentElement.classList.add('logo-missing')"
+    />
+    <span class="welcome-logo-fallback">STELLAVISTA</span>
+  </div>
   <div class="divider"></div>
   <p class="subtitle">¿Cómo deseas que te llamemos?</p>
 

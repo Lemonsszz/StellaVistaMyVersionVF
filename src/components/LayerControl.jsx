@@ -3,28 +3,22 @@ import { useAstroStore } from '../store/useAstroStore';
 
 const LAYERS = [
   {
-    key: 'bortleLocal',
-    label: 'Bortle local Oruro',
-    description: 'Modelo offline por zonas',
+    key: 'contaminacionLuminica',
+    label: 'Contaminacion luminica',
+    description: 'Modelo Bortle',
     dot: 'bg-astro-sky',
   },
-  {
-    key: 'contaminacionLuminica',
-    label: 'VIIRS historico',
-    description: 'Raster NASA de apoyo',
-    dot: 'bg-astro-nebula',
-  },
-  {
-    key: 'nubosidad',
+  /*{
+    : 'nubosidad',
     label: 'Nubosidad',
     description: 'Cobertura nubosa actual',
     dot: 'bg-astro-sky',
-  },
+  },*/
   {
     key: 'sitiosRecomendados',
     label: 'Sitios recomendados',
     description: 'Puntos optimos de observacion',
-    dot: 'bg-astro-horizon',
+    dot: 'bg-astro-nebula',
   },
 ];
 
@@ -90,7 +84,7 @@ export const LayerControl = () => {
                   absolute top-0.5 w-3 h-3 rounded-full
                   transition-all duration-300
                   ${isActive
-                    ? 'left-4 bg-astro-sky'
+                    ? 'left-4 bg-astro-nebula'
                     : 'left-0.5 bg-astro-dim'
                   }
                 `} />
@@ -100,7 +94,7 @@ export const LayerControl = () => {
         })}
       </div>
 
-      {layers.bortleLocal && (
+      {layers.contaminacionLuminica && (
         <div className="mt-3 bg-neu-sunken rounded-xl shadow-neu-inset border border-neu-border/40 p-3">
           <p className="text-[8px] tracking-[0.16em] uppercase text-astro-dim mb-2">
             Leyenda Bortle
@@ -117,7 +111,7 @@ export const LayerControl = () => {
             </div>
           ))}
           <p className="mt-2 text-[8px] text-astro-dim leading-snug">
-            Modelo local para prototipo - Oruro
+            Modelo local Bolivia-Oruro para prototipo
           </p>
         </div>
       )}

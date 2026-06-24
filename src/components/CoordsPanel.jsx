@@ -40,6 +40,9 @@ export const CoordsPanel = ({ altitud, bortleInfo }) => {
           <p className="text-[10px] text-astro-text leading-snug">
             Bortle {activeBortleInfo.bortle} - {activeBortleInfo.label}
           </p>
+          <p className="mt-1 text-[8px] text-astro-muted leading-snug">
+            Dominante: {activeBortleInfo.sourceName ?? activeBortleInfo.dominantSource ?? 'sin fuente'}
+          </p>
           <p className="mt-1 text-[8px] text-astro-dim leading-snug">
             {explainBortleSource(activeBortleInfo)}
           </p>
