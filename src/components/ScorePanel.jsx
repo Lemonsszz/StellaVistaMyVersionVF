@@ -1,5 +1,6 @@
 // src/components/ScorePanel.jsx
-import { calcularScore, getColorSemforo } from '../utils/astroLogic';
+import { calcularScore } from '../utils/astroLogic';
+import { getBortleColor, getBortleLabel } from '../utils/bortleModel';
 
 const getEstado = (score) => {
   if (score >= 75) return { label: 'Condiciones óptimas', shadow: 'shadow-neu-sky',  border: 'border-astro-sky/20' };
@@ -39,6 +40,13 @@ export const ScorePanel = ({ data, isLoading }) => {
   const score = calcularScore(data);
   const { label, shadow, border } = getEstado(score);
   const colorScore = getColorScore(score);
+  const bortleInfo = data.bortleInfo ?? {
+    bortle: data.bortle ?? 4,
+    label: getBortleLabel(data.bortle ?? 4),
+    confidence: 'baja',
+    source: 'fallback-ui',
+  };
+  const bortleColor = getBortleColor(bortleInfo.bortle);
 
   return (
     <div className={`
@@ -86,15 +94,35 @@ export const ScorePanel = ({ data, isLoading }) => {
           { key: 'Lunar',    val: `${Math.round(data.faseLunar)}%`   },
           { key: 'Viento',   val: `${Math.round(data.jetstream)} km/h` },
           { key: 'Altitud',  val: `${data.altitud} m`               },
+          { key: 'Bortle',   val: `${bortleInfo.bortle}`             },
         ].map(({ key, val }) => (
           <div
             key={key}
             className="bg-neu-sunken rounded-lg p-2 shadow-neu-inset"
           >
             <p className="text-[8px] uppercase tracking-[0.14em] text-astro-dim mb-1">{key}</p>
-            <p className="text-[11px] text-astro-text font-medium">{val}</p>
+            <p
+              className="text-[11px] text-astro-text font-medium"
+              style={key === 'Bortle' ? { color: bortleColor } : undefined}
+            >
+              {val}
+            </p>
           </div>
         ))}
+      </div>
+
+      <div className="mt-3 bg-neu-sunken rounded-lg p-2 shadow-neu-inset border border-neu-border/40">
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-[9px] text-astro-text font-medium truncate">
+            Bortle {bortleInfo.bortle} - {bortleInfo.label}
+          </p>
+          <span className="text-[8px] uppercase tracking-[0.12em] text-astro-dim shrink-0">
+            {bortleInfo.confidence}
+          </span>
+        </div>
+        <p className="mt-1 text-[8px] leading-relaxed text-astro-dim">
+          Bortle estimado localmente para Oruro. No usa API externa. Validable con mediciones SQM.
+        </p>
       </div>
     </div>
   );

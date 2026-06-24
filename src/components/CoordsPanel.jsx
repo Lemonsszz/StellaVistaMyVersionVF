@@ -1,8 +1,10 @@
 // src/components/CoordsPanel.jsx
 import { useAstroStore } from '../store/useAstroStore';
+import { explainBortleSource, getBortleForCoordinates } from '../utils/bortleModel';
 
-export const CoordsPanel = ({ altitud }) => {
+export const CoordsPanel = ({ altitud, bortleInfo }) => {
   const { coordinates } = useAstroStore();
+  const activeBortleInfo = bortleInfo ?? getBortleForCoordinates(coordinates.lat, coordinates.lng);
 
   return (
     <div className="mx-3 mb-3">
@@ -29,6 +31,18 @@ export const CoordsPanel = ({ altitud }) => {
               <p className="text-[11px] text-astro-text font-medium tabular-nums">{val}</p>
             </div>
           ))}
+        </div>
+
+        <div className="mt-3 border-t border-neu-border pt-2">
+          <p className="text-[8px] uppercase tracking-[0.14em] text-astro-dim mb-1">
+            Contaminacion luminica
+          </p>
+          <p className="text-[10px] text-astro-text leading-snug">
+            Bortle {activeBortleInfo.bortle} - {activeBortleInfo.label}
+          </p>
+          <p className="mt-1 text-[8px] text-astro-dim leading-snug">
+            {explainBortleSource(activeBortleInfo)}
+          </p>
         </div>
       </div>
     </div>

@@ -45,7 +45,7 @@ function App() {
         <aside className="w-64 bg-neu-base border-r border-neu-border flex flex-col shrink-0 overflow-y-auto">
           <ScorePanel data={data} isLoading={isLoading} />
           <LayerControl />
-          <CoordsPanel altitud={data?.altitud} />
+          <CoordsPanel altitud={data?.altitud} bortleInfo={data?.bortleInfo} />
         </aside>
 
         {/* MAPA CENTRAL */}

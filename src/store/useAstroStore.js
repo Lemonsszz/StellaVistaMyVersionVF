@@ -11,7 +11,8 @@ export const useAstroStore = create((set) => ({
 
   // Capas del mapa
   layers: {
-    contaminacionLuminica: true,
+    bortleLocal: true,
+    contaminacionLuminica: false,
     nubosidad: false,
     sitiosRecomendados: true,
   },

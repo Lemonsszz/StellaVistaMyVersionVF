@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import SunCalc from 'suncalc';
 import { useAstroStore } from '../store/useAstroStore';
+import { getBortleForCoordinates } from '../utils/bortleModel';
 
 export const useCondicionesNocturnas = () => {
   const { coordinates } = useAstroStore();
@@ -12,7 +13,9 @@ export const useCondicionesNocturnas = () => {
       if (!coordinates.lat || !coordinates.lng) return null;
 
       try {
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${coordinates.lat}&longitude=${coordinates.lng}&current=cloud_cover,wind_speed_200hPa&hourly=cloud_cover,wind_speed_200hPa&forecast_days=1&timezone=auto`;
+        const { lat, lng } = coordinates;
+        const bortleInfo = getBortleForCoordinates(lat, lng);
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=cloud_cover,wind_speed_200hPa&hourly=cloud_cover,wind_speed_200hPa&forecast_days=1&timezone=auto`;
         
         const res = await fetch(url);
         if (!res.ok) throw new Error('Error API');
@@ -48,7 +51,8 @@ export const useCondicionesNocturnas = () => {
           altitud: data.elevation ?? 3700,
           faseLunar: (luna.fraction * 100) || 0,
           lunaFase: luna.phase,
-          bortle: 4,
+          bortle: bortleInfo.bortle,
+          bortleInfo,
           forecast,
         };
       } catch (err) {
