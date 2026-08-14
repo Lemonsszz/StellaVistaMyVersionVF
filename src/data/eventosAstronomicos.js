@@ -9,52 +9,58 @@ export const eventosAstronomicos = {
   5: [], // Junio
   6: [], // Julio
 
-  // AGOSTO
+  // AGOSTO 2026
   7: [
     {
-      id: "eclipse-solar-agosto-2026",
-      tipo: "Eclipse solar",
-      icono: "🌑",
+      id: "eclipse-solar-2026",
+      tipo: "",
+      icono: "",
       titulo: "Eclipse Solar Total",
       fecha: "12 de agosto de 2026",
-      horario: "Durante el día",
+      horario: "Según ubicación",
+      importancia: 5,
       descripcion:
-        "Un eclipse solar total será visible desde determinadas regiones del hemisferio norte. Es uno de los eventos astronómicos más destacados de 2026.",
+        "La Luna cubrirá completamente al Sol durante unos minutos en la franja de totalidad.",
       visibilidad:
-        "Visible principalmente desde Groenlandia, Islandia, España y otras zonas del Atlántico norte.",
-      importancia: "★★★★★",
+        "Totalidad: Groenlandia, Islandia, España y zonas de Rusia. Eclipse parcial en otras regiones.",
+      recomendacion:
+        "Para observar las fases parciales es obligatorio utilizar protección solar certificada.",
       imagen:
-        "https://images.unsplash.com/photo-1532978371833-33d2d8a5b6e5?auto=format&fit=crop&w=900&q=80",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTS1KnARyg8GHTDnbUnQEFynBVbN8vEtfMQ4cZNZQZ_YSaZIiy9VaYGvU&s=10",
     },
 
     {
-      id: "perseidas-agosto-2026",
-      tipo: "Lluvia de meteoros",
-      icono: "☄️",
-      titulo: "Lluvia de Meteoros Perseidas",
+      id: "perseidas-2026",
+      tipo: "",
+      icono: "",
+      titulo: "Perseidas",
       fecha: "12 - 13 de agosto de 2026",
-      horario: "Durante la madrugada",
+      horario: "Después de medianoche",
+      importancia: 5,
       descripcion:
-        "Las Perseidas alcanzarán su máximo durante agosto. En 2026 coinciden con una Luna nueva, proporcionando condiciones especialmente favorables para observar meteoros.",
+        "Una de las lluvias de meteoros más conocidas del año, producida por los restos del cometa 109P/Swift-Tuttle.",
       visibilidad:
-        "Visible desde gran parte del mundo durante las horas nocturnas.",
-      importancia: "★★★★★",
+        "Mejor desde lugares oscuros y alejados de la contaminación lumínica.",
+      recomendacion:
+        "Busca un cielo despejado, oscuro y con un horizonte amplio. Este año las condiciones lunares son especialmente favorables.",
       imagen:
         "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=900&q=80",
     },
 
     {
-      id: "eclipse-lunar-agosto-2026",
-      tipo: "Eclipse lunar",
-      icono: "🌕",
+      id: "eclipse-lunar-2026",
+      tipo: "",
+      icono: "",
       titulo: "Eclipse Lunar Parcial",
       fecha: "27 - 28 de agosto de 2026",
       horario: "Durante la noche",
+      importancia: 5,
       descripcion:
-        "La Luna atravesará parcialmente la sombra de la Tierra, produciendo un eclipse lunar parcial observable desde amplias regiones del planeta.",
+        "La Luna atravesará parcialmente la sombra de la Tierra, produciendo un eclipse lunar visible desde una gran parte del planeta.",
       visibilidad:
-        "Visible desde América, Europa, África y otras regiones del lado nocturno de la Tierra.",
-      importancia: "★★★★★",
+        "Visible desde América, Europa, África y partes de Asia occidental.",
+      recomendacion:
+        "No requiere protección ocular especial. Busca un lugar con buena visibilidad del horizonte.",
       imagen:
         "https://images.unsplash.com/photo-1532693322450-2cb5c511067d?auto=format&fit=crop&w=900&q=80",
     },
