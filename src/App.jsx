@@ -15,6 +15,7 @@ import { AstroPanel }  from './components/AstroPanel';
 import { ForecastBar } from './components/ForecastBar';
 import { MapaInteractivo } from './components/MapaInteractivo';
 import { IntroWindow } from './components/IntroWindow';
+import  EventosAstronomicos  from './components/EventosAstronomicos';
 
 const INTRO_SESSION_KEY = 'stellavista:intro-complete';
 
@@ -61,6 +62,8 @@ function App() {
         <main className="flex-1 relative overflow-hidden">
           
             <MapaInteractivo onClic={manejaClic} />
+            <EventosAstronomicos/>
+
           
         </main>
 
