@@ -4,7 +4,7 @@
 // src/App.jsx
 import Map from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useAstroStore } from './store/useAstroStore';
 import { useCondicionesNocturnas } from './hooks/useCondicionesNocturnas';
 import { Topbar }      from './components/Topbar';
@@ -26,6 +26,8 @@ function App() {
   const [introVisible, setIntroVisible] = useState(() => {
     return sessionStorage.getItem(INTRO_SESSION_KEY) !== 'true';
   });
+  const mapRef = useRef(null);
+  const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
 
   // Modo nocturno — aplica filtro rojo a toda la app
   useEffect(() => {
@@ -61,8 +63,27 @@ function App() {
         {/* MAPA CENTRAL */}
         <main className="flex-1 relative overflow-hidden">
           
-            <MapaInteractivo onClic={manejaClic} />
-            <EventosAstronomicos/>
+            <MapaInteractivo
+              onClic={manejaClic}
+              mapRef={mapRef}
+              eventoSeleccionado={eventoSeleccionado}
+            />
+            <EventosAstronomicos
+              onVerEnMapa={(evento) => {
+                setEventoSeleccionado(evento);
+
+                if (evento?.mapLocation && mapRef.current) {
+                  mapRef.current.flyTo({
+                    center: [
+                      evento.mapLocation.longitude,
+                      evento.mapLocation.latitude,
+                    ],
+                    zoom: evento.mapLocation.zoom || 5,
+                    duration: 2000,
+                  });
+                }
+              }}
+            />
 
           
         </main>

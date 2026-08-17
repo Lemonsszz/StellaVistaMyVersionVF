@@ -27,6 +27,11 @@ export const eventosAstronomicos = {
         "Para observar las fases parciales es obligatorio utilizar protección solar certificada.",
       imagen:
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTS1KnARyg8GHTDnbUnQEFynBVbN8vEtfMQ4cZNZQZ_YSaZIiy9VaYGvU&s=10",
+        mapLocation: {
+        longitude: -3.7,
+        latitude: 40.4,
+        zoom: 5,
+},
     },
 
     {
@@ -45,7 +50,12 @@ export const eventosAstronomicos = {
         "Busca un cielo despejado, oscuro y con un horizonte amplio. Este año las condiciones lunares son especialmente favorables.",
       imagen:
         "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=900&q=80",
-    },
+    mapLocation: {
+  longitude: -66.15,
+  latitude: -17.4,
+  zoom: 5,
+},
+      },
 
     {
       id: "eclipse-lunar-2026",
@@ -63,7 +73,12 @@ export const eventosAstronomicos = {
         "No requiere protección ocular especial. Busca un lugar con buena visibilidad del horizonte.",
       imagen:
         "https://images.unsplash.com/photo-1532693322450-2cb5c511067d?auto=format&fit=crop&w=900&q=80",
-    },
+  mapLocation: {
+  longitude: -70,
+  latitude: -15,
+  zoom: 4,
+},
+      },
   ],
 
   8: [], // Septiembre

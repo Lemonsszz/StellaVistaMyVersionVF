@@ -1,5 +1,4 @@
 // src/components/MapaInteractivo.jsx
-import { useRef } from 'react';
 import Map, { Source, Layer, Marker } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { getAllBortleZonesGeoJSON } from '../data/boliviaBortleZones';
@@ -135,9 +134,12 @@ const LAYER_SITIOS_LABELS = {
   },
 };
 
-export const MapaInteractivo = ({ onClic }) => {
+export const MapaInteractivo = ({
+  onClic,
+  mapRef,
+  eventoSeleccionado,
+}) => {
   const { coordinates, layers } = useAstroStore();
-  const mapRef = useRef(null);
   const mapKey = 'ECRGZxLvLb4HTx76OnDg';
 
   return (
@@ -173,6 +175,21 @@ export const MapaInteractivo = ({ onClic }) => {
           <div className="w-px h-3 bg-astro-nebula opacity-70" />
         </div>
       </Marker>
+            {eventoSeleccionado?.mapLocation && (
+        <Marker
+          longitude={eventoSeleccionado.mapLocation.longitude}
+          latitude={eventoSeleccionado.mapLocation.latitude}
+          anchor="bottom"
+        >
+          <div className="flex flex-col items-center">
+            <div className="px-3 py-2 rounded-lg bg-black/90 border border-white/20 shadow-xl text-white text-xs whitespace-nowrap">
+              {eventoSeleccionado.icono} {eventoSeleccionado.titulo}
+            </div>
+
+            <div className="w-3 h-3 rounded-full bg-yellow-400 border-2 border-white shadow-lg mt-1" />
+          </div>
+        </Marker>
+)}
     </Map>
   );
 };

@@ -1,6 +1,8 @@
 import { useState } from "react";
-import { ChevronDown, ChevronUp, CalendarDays, Clock, MapPin } from "lucide-react";
+import { ChevronDown, ChevronUp, CalendarDays, Clock, MapPin , Star} from "lucide-react";
 import { eventosAstronomicos } from "../data/eventosAstronomicos";
+import { Sparkles } from "lucide-react";
+import { Gauge } from "lucide-react";
 
 const nombresMeses = [
   "Enero",
@@ -17,7 +19,7 @@ const nombresMeses = [
   "Diciembre",
 ];
 
-export default function EventosAstronomicos() {
+export default function EventosAstronomicos({ onVerEnMapa }) {
   const [abierto, setAbierto] = useState(false);
 
   const fechaActual = new Date();
@@ -42,7 +44,9 @@ export default function EventosAstronomicos() {
         text-white shadow-xl hover:bg-black/90 transition"
       >
         <div className="flex items-center gap-3">
-          <div className="text-2xl">🌠</div>
+          <div className="flex items-center justify-center">
+            <Sparkles size={22} strokeWidth={1.8} />
+          </div>
 
           <div className="text-left">
             <p className="font-semibold text-sm">
@@ -132,17 +136,44 @@ export default function EventosAstronomicos() {
                     </div>
 
                     {/* IMPORTANCIA */}
-                  <div className="mt-3 flex items-center gap-2">
-                    <span className="text-xs text-gray-400">
-                      Importancia:
-                    </span>
+                    <div className="mt-3 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Gauge
+                          size={15}
+                          strokeWidth={1.7}
+                          className="text-purple-400"
+                        />
 
-                    <span className="text-yellow-400 text-sm tracking-wide">
-                      {"★".repeat(evento.importancia)}
-                      {"☆".repeat(5 - evento.importancia)}
-                    </span>
-                  </div>
+                        <span className="text-xs text-gray-400">
+                          Importancia
+                        </span>
+                      </div>
 
+                      <div className="flex items-center gap-2">
+                        {/* Barra */}
+                        <div className="w-20 h-1.5 rounded-full bg-white/10 overflow-hidden">
+                          <div
+                            className="h-full rounded-full bg-purple-400 transition-all"
+                            style={{
+                              width: `${(evento.importancia / 5) * 100}%`,
+                            }}
+                          />
+                        </div>
+
+                        {/* Nivel */}
+                        <span className="text-[10px] text-gray-400 min-w-[20px]">
+                          {evento.importancia}/5
+                        </span>
+
+                        {/* Reloj */}
+                        <Clock
+                          size={15}
+                          strokeWidth={1.7}
+                          className="text-gray-400"
+                          title={evento.horario}
+                        />
+                      </div>
+                    </div>
                   {/* DESCRIPCIÓN */}
                   <p className="mt-3 text-xs leading-relaxed text-gray-300">
                     {evento.descripcion}
@@ -171,15 +202,26 @@ export default function EventosAstronomicos() {
                   </div>
 
                   {/* BOTÓN */}
-                  <button
-                    className="mt-4 w-full rounded-xl bg-white 
-                    text-zinc-900 hover:bg-zinc-50 hover:scale-[1.01] 
-                    active:scale-100 py-3 text-sm font-bold tracking-wide 
-                    shadow-lg shadow-white/5 hover:shadow-xl hover:shadow-white/10 transition-all duration-200"
-                  >
-                    Ver en el mapa
-                  </button>
-
+                <button
+                  onClick={() => onVerEnMapa?.(evento)}
+                  className="
+                    mt-4 w-full
+                    flex items-center justify-center gap-2
+                    rounded-lg
+                    bg-gradient-to-r from-indigo-500/80 to-purple-500/80
+                    hover:from-indigo-500 hover:to-purple-500
+                    border border-white/20
+                    py-2.5
+                    text-xs font-semibold text-white
+                    shadow-lg shadow-indigo-500/20
+                    hover:shadow-indigo-500/40
+                    hover:scale-[1.02]
+                    active:scale-[0.98]
+                    transition-all duration-200
+                  "
+                >
+                  Explorar en el mapa
+                </button>
                   </div>
                 </article>
               ))}
