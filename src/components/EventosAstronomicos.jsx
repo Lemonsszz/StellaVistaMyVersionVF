@@ -28,8 +28,8 @@ export default function EventosAstronomicos({ onVerEnMapa }) {
   const eventos = eventosAstronomicos[mesActual] || [];
 
   return (
-                  <div
-                className="absolute top-4 right-4 z-20 w-[360px] flex flex-col"
+              <div
+                className="absolute top-4 right-4 z-20 w-[360px] flex flex-col pointer-events-none"
                 style={{
                   bottom: "48px",
                 }}
@@ -39,9 +39,9 @@ export default function EventosAstronomicos({ onVerEnMapa }) {
       <button
         onClick={() => setAbierto(!abierto)}
         className="w-full flex items-center justify-between 
-        rounded-xl bg-black/80 backdrop-blur-md
-        border border-white/10 px-4 py-3
-        text-white shadow-xl hover:bg-black/90 transition"
+        rounded-xl bg-black/50 backdrop-blur-md
+        border border-white/10 px-14  py-3
+        text-white shadow-xl hover:bg-black/90 transition pointer-events-auto"
       >
         <div className="flex items-center gap-3">
           <div className="flex items-center justify-center">
@@ -71,7 +71,7 @@ export default function EventosAstronomicos({ onVerEnMapa }) {
         <div
           className="mt-2 max-h-[75vh] overflow-y-auto
           rounded-xl bg-black/85 backdrop-blur-md
-          border border-white/10 shadow-2xl p-3"
+          border border-white/10 shadow-2xl p-3 pointer-events-auto"
         >
           {eventos.length === 0 ? (
             <div className="text-center text-gray-400 py-8">

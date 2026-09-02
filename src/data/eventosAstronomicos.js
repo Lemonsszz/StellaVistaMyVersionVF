@@ -81,7 +81,76 @@ export const eventosAstronomicos = {
       },
   ],
 
-  8: [], // Septiembre
+8: [
+  {
+    id: "luna-nueva-septiembre-2026",
+    tipo: "",
+    icono: "",
+    titulo: "Luna Nueva",
+    fecha: "10 de septiembre de 2026",
+    horario: "23:27",
+    importancia: 5,
+    descripcion:
+      "La Luna estará prácticamente invisible desde la Tierra, creando condiciones ideales para observar objetos débiles del cielo profundo.",
+    visibilidad:
+      "Excelente para observación astronómica desde lugares alejados de la contaminación lumínica.",
+    recomendacion:
+      "Es una de las mejores noches del mes para observar la Vía Láctea, nebulosas y galaxias.",
+    imagen:
+      "https://images.unsplash.com/photo-1532978379173-523e16f371f2?auto=format&fit=crop&w=900&q=80",
+    mapLocation: {
+      longitude: -67.1184,
+      latitude: -17.9561,
+      zoom: 8,
+    },
+  },
+
+  {
+    id: "equinoccio-septiembre-2026",
+    tipo: "",
+    icono: "",
+    titulo: "Equinoccio de Septiembre",
+    fecha: "22 de septiembre de 2026",
+    horario: "20:05",
+    importancia: 5,
+    descripcion:
+      "El Sol cruzará el ecuador celeste, marcando el inicio de la primavera astronómica en el hemisferio sur.",
+    visibilidad:
+      "El fenómeno ocurre a nivel global y marca un cambio estacional astronómico.",
+    recomendacion:
+      "Es un momento interesante para estudiar la posición del Sol y la duración del día y la noche.",
+    imagen:
+      "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=900&q=80",
+    mapLocation: {
+      longitude: -67.1184,
+      latitude: -17.9561,
+      zoom: 5,
+    },
+  },
+
+  {
+    id: "luna-llena-septiembre-2026",
+    tipo: "",
+    icono: "",
+    titulo: "Luna Llena",
+    fecha: "26 de septiembre de 2026",
+    horario: "12:49",
+    importancia: 5,
+    descripcion:
+      "La Luna alcanzará su fase llena y estará completamente iluminada por el Sol.",
+    visibilidad:
+      "Visible desde Bolivia durante la noche alrededor de la fecha del evento.",
+    recomendacion:
+      "Ideal para fotografía lunar y observación de cráteres y mares lunares.",
+    imagen:
+      "https://images.unsplash.com/photo-1522030299830-16b8d3d049fe?auto=format&fit=crop&w=900&q=80",
+    mapLocation: {
+      longitude: -67.1184,
+      latitude: -17.9561,
+      zoom: 5,
+    },
+  },
+],
   9: [], // Octubre
   10: [], // Noviembre
   11: [], // Diciembre

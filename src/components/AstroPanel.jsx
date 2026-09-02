@@ -216,7 +216,7 @@ export const AstroPanel = ({ faseLunar, lunaFase }) => {
           })}
         </div>
       </div>
-              <div className="mx-3 mb-3 mt-auto">
+      <div className="mx-3 mb-3 mt-auto">
       <button
         onClick={() => setPlanetarioAbierto(true)}
         className="w-full py-2.5 rounded-xl bg-neu-raised border border-neu-border shadow-neu-sm text-[9px] tracking-[0.15em] uppercase text-astro-sky hover:text-astro-sky/80 transition-colors"

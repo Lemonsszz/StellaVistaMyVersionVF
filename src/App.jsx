@@ -16,6 +16,7 @@ import { ForecastBar } from './components/ForecastBar';
 import { MapaInteractivo } from './components/MapaInteractivo';
 import { IntroWindow } from './components/IntroWindow';
 import  EventosAstronomicos  from './components/EventosAstronomicos';
+import { AstronomoIA } from './components/AstronomoIA';
 
 const INTRO_SESSION_KEY = 'stellavista:intro-complete';
 
@@ -84,6 +85,8 @@ function App() {
                 }
               }}
             />
+            
+            <AstronomoIA />
 
           
         </main>
