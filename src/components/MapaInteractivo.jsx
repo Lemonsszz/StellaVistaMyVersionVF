@@ -3,6 +3,7 @@ import Map, { Source, Layer, Marker } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { getAllBortleZonesGeoJSON } from '../data/boliviaBortleZones';
 import { useAstroStore } from '../store/useAstroStore';
+import { MapPin } from 'lucide-react';
 
 const SITIOS_RECOMENDADOS = {
   type: 'FeatureCollection',
@@ -168,6 +169,7 @@ export const MapaInteractivo = ({
           <Layer {...LAYER_SITIOS_LABELS} />
         </Source>
       )}
+      
 
       <Marker longitude={coordinates.lng} latitude={coordinates.lat} anchor="bottom">
         <div className="flex flex-col items-center">
@@ -189,7 +191,10 @@ export const MapaInteractivo = ({
             <div className="w-3 h-3 rounded-full bg-yellow-400 border-2 border-white shadow-lg mt-1" />
           </div>
         </Marker>
+        
+        
 )}
+
     </Map>
   );
 };

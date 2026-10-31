@@ -1,0 +1,151 @@
+
+.bitacora-form {
+  display: grid;
+  gap: 14px;
+}
+
+.bitacora-form label {
+  display: grid;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-secondary, #aab4c5);
+}
+
+.bitacora-form input,
+.bitacora-form select,
+.bitacora-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid var(--border-color, #303b4e);
+  border-radius: 9px;
+  background: var(--surface-color, #111827);
+  color: var(--text-color, #f1f5f9);
+  font: inherit;
+}
+
+.bitacora-form textarea {
+  resize: vertical;
+}
+
+.bitacora-coords {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--border-color, #303b4e);
+  border-radius: 9px;
+}
+
+.bitacora-coords {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--border-color, #303b4e);
+  border-radius: 9px;
+  background: var(--surface-color, #111827);
+  margin-bottom: 4px;
+}
+
+.bitacora-save {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px;
+  border: 0;
+  border-radius: 9px;
+  background: #8b5cf6;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.bitacora-records {
+  margin-top: 26px;
+}
+
+.bitacora-records h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+}
+
+.bitacora-empty {
+  font-size: 13px;
+  opacity: 0.7;
+}
+
+.bitacora-card {
+  margin-top: 12px;
+  padding: 13px;
+  border: 1px solid var(--border-color, #303b4e);
+  border-radius: 10px;
+}
+
+.bitacora-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.bitacora-card h4 {
+  margin: 0 0 5px;
+}
+
+.bitacora-card span,
+.bitacora-card small {
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+.bitacora-card p {
+  font-size: 13px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.bitacora-card small {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.bitacora-delete {
+  border: 0;
+  background: transparent;
+  color: #f87171;
+  cursor: pointer;
+  padding: 5px;
+}
+.bitacora-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.bitacora-coords svg {
+  color: #8b5cf6; /* Color de acento para el ícono de ubicación */
+  flex-shrink: 0;
+}
+.bitacora-coords div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+.bitacora-coords strong {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary, #aab4c5);
+}   
+.bitacora-coords p {
+  margin: 0;
+  font-size: 13px;
+  font-family: monospace;
+  color: #f1f5f9;
+  overflow-wrap: anywhere;
+}

@@ -189,6 +189,7 @@ export default function EventosAstronomicos({ onVerEnMapa }) {
                       {evento.visibilidad}
                     </p>
                   </div>
+                  
 
                   {/* RECOMENDACIÓN */}
                   <div className="mt-2 rounded-lg bg-white/5 border border-white/10 p-3">
@@ -233,3 +234,5 @@ export default function EventosAstronomicos({ onVerEnMapa }) {
     </div>
   );
 }
+
+//ENTREGA FINAL 11/10/2026
