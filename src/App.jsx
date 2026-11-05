@@ -22,11 +22,15 @@ const INTRO_SESSION_KEY = 'stellavista:intro-complete';
 
 function App() {
   const { coordinates, setCoordinates, isRedMode } = useAstroStore();
-  const { data, isLoading } = useCondicionesNocturnas();
-  const mapKey = "ECRGZxLvLb4HTx76OnDg";
+  const { data, isLoading, isError, refetch } = useCondicionesNocturnas();
   const [introVisible, setIntroVisible] = useState(() => {
     return sessionStorage.getItem(INTRO_SESSION_KEY) !== 'true';
   });
+  // El dashboard (mapa incluido) no se monta hasta que el intro arranca el
+  // warp, para que el portal cargue sin competir con MapLibre.
+  const [dashboardReady, setDashboardReady] = useState(
+    () => sessionStorage.getItem(INTRO_SESSION_KEY) === 'true'
+  );
   const mapRef = useRef(null);
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
   
@@ -36,7 +40,7 @@ function App() {
   const [menuDesplegableAbierto, setMenuDesplegableAbierto] = useState(false);
   
 
-  // Modo nocturno — aplica fi  ltro rojo a toda la app
+  // Modo nocturno — aplica filtro rojo a toda la app
   useEffect(() => {
     document.documentElement.classList.toggle('astro-red', isRedMode);
   }, [isRedMode]);
@@ -46,27 +50,67 @@ const manejaClic = (evento) => {
     setCoordinates({ lat, lng });
     setEventoSeleccionado(null); // <--- Limpia el indicador/marcador anterior al hacer clic en el mapa
   };
+
+  // Lleva el mapa a la mejor zona de observacion sugerida desde la ficha de
+  // un planeta y deja un marcador con el nombre del planeta.
+  const irAZonaObservacion = (zona, planetaLabel) => {
+    if (!zona) return;
+
+    setCoordinates({ lat: zona.lat, lng: zona.lng });
+    setEventoSeleccionado({
+      titulo: `${planetaLabel} · ${zona.nombre}`,
+      icono: '🪐',
+      mapLocation: {
+        latitude: zona.lat,
+        longitude: zona.lng,
+        zoom: 10,
+      },
+    });
+
+    if (mapRef.current) {
+      mapRef.current.flyTo({
+        center: [zona.lng, zona.lat],
+        zoom: 10,
+        duration: 2200,
+      });
+    }
+  };
+
 //  const manejaClic = (evento) => {
    // const { lng, lat } = evento.lngLat;
     //setCoordinates({ lat, lng });
   //};
   const completarIntro = () => {
     sessionStorage.setItem(INTRO_SESSION_KEY, 'true');
+    setDashboardReady(true);
     setIntroVisible(false);
   };
 
   return (
-    <div className="w-screen h-screen bg-neu-base flex flex-col overflow-hidden font-mono">
+    <div className="relative w-screen h-screen bg-transparent flex flex-col overflow-hidden font-sans text-ink-300">
 
+      {/* Atmósfera de fondo */}
+      <div aria-hidden="true" className="absolute inset-0 pointer-events-none starlight-layer opacity-40 z-0" />
+      <div aria-hidden="true" className="absolute -top-40 -left-40 w-96 h-96 bg-purple-900/10 rounded-full blur-[140px] pointer-events-none z-0" />
+      <div aria-hidden="true" className="absolute bottom-10 right-10 w-[30rem] h-[30rem] bg-indigo-950/20 rounded-full blur-[160px] pointer-events-none z-0" />
+
+      {dashboardReady && (
+        <div className="relative z-10 flex flex-col flex-1 min-h-0">
+      {/* El dashboard se monta recién cuando el intro arranca el warp. */}
       {/* FILA 1 — Topbar */}
       <Topbar coordinates={coordinates} />
 
       {/* FILA 2 — Contenido principal */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 min-h-0 overflow-hidden">
 
         {/* COLUMNA IZQUIERDA */}
-        <aside className="w-64 bg-neu-base border-r border-neu-border flex flex-col shrink-0 overflow-y-auto">
-          <ScorePanel data={data} isLoading={isLoading} />
+        <aside className="w-64 bg-transparent border-r border-white/[0.04] flex flex-col shrink-0 overflow-y-auto gap-3 p-3">
+          <ScorePanel
+            data={data}
+            isLoading={isLoading}
+            isError={isError}
+            onRetry={refetch}
+          />
           <LayerControl />
           <CoordsPanel altitud={data?.altitud} bortleInfo={data?.bortleInfo} />
         </aside>
@@ -78,6 +122,8 @@ const manejaClic = (evento) => {
             mapRef={mapRef}
             eventoSeleccionado={eventoSeleccionado}
           />
+          {/* Velo sutil de integración sobre el mapa */}
+          <div className="pointer-events-none absolute inset-0 z-10 ring-1 ring-inset ring-white/[0.06]" />
           <EventosAstronomicos
             onVerEnMapa={(evento) => {
               setEventoSeleccionado(evento);
@@ -101,7 +147,7 @@ const manejaClic = (evento) => {
             {/* 3. PANEL ACTIVO (Bitácora, Lugares Guardados o Astrónomo IA) */}
             {panelActivo !== 'ninguno' && (
               <div 
-                className={`rounded-xl border border-neu-border bg-neu-base shadow-2xl mb-2 flex flex-col relative overflow-hidden transition-all duration-200 ${
+                className={`glass-card rounded-2xl shadow-2xl mb-2 flex flex-col relative overflow-hidden animate-card-rise ${
                   panelActivo === 'ia' 
                     ? 'w-[340px] h-[400px] max-w-[calc(100vw-3rem)]'  
                     : 'w-[380px] h-[460px] max-w-[calc(100vw-3rem)]'   
@@ -111,7 +157,7 @@ const manejaClic = (evento) => {
                 {/* Botón de cierre absoluto */}
                 <button
                   onClick={() => setPanelActivo('ninguno')}
-                  className="absolute top-3 right-3 z-30 text-gray-400 hover:text-white p-1.5 rounded-md bg-neu-base/90 hover:bg-neu-border/50 transition-colors border border-neu-border/60 shadow"
+                  className="absolute top-3 right-3 z-30 text-ink-400 hover:text-white p-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] transition-colors border border-white/[0.08]"
                   title="Cerrar panel"
                 >
                   <X size={16} />
@@ -151,7 +197,7 @@ const manejaClic = (evento) => {
 
                   {panelActivo === 'ia' && (
                     <div className="w-full h-full flex flex-col [&>*]:flex-1 [&>*]:overflow-hidden [&>*]:flex [&>*]:flex-col">
-                      <AstronomoIA />
+                      <AstronomoIA eventoSeleccionado={eventoSeleccionado} />
                     </div>
                   )}
                 </div>
@@ -160,13 +206,13 @@ const manejaClic = (evento) => {
 
             {/* 2. MENÚ DESPLEGABLE (Opciones de herramientas) */}
             {menuDesplegableAbierto && panelActivo === 'ninguno' && (
-              <div className="w-64 rounded-xl border border-neu-border bg-neu-base p-2 shadow-2xl flex flex-col gap-1 mb-2">
+              <div className="glass-card w-64 rounded-2xl p-2 shadow-2xl flex flex-col gap-1 mb-2 animate-card-rise">
                 <button
                   onClick={() => {
                     setPanelActivo('bitacora');
                     setMenuDesplegableAbierto(false);
                   }}
-                  className="flex items-center gap-2 w-full px-3 py-2.5 text-sm text-left rounded-lg text-gray-300 hover:bg-neu-border/20 hover:text-white transition-colors"
+                  className="flex items-center gap-2 w-full px-3 py-2.5 text-xs text-left rounded-xl text-ink-300 hover:bg-purple-500/10 hover:text-purple-100 transition-colors"
                 >
                   <NotebookPen size={16} />
                   Bitácora astronómica
@@ -177,7 +223,7 @@ const manejaClic = (evento) => {
                     setPanelActivo('guardados');
                     setMenuDesplegableAbierto(false);
                   }}
-                  className="flex items-center gap-2 w-full px-3 py-2.5 text-sm text-left rounded-lg text-gray-300 hover:bg-neu-border/20 hover:text-white transition-colors"
+                  className="flex items-center gap-2 w-full px-3 py-2.5 text-xs text-left rounded-xl text-ink-300 hover:bg-purple-500/10 hover:text-purple-100 transition-colors"
                 >
                   <BookmarkCheck size={16} />
                   Lugares guardados / Visitas
@@ -188,7 +234,7 @@ const manejaClic = (evento) => {
                     setPanelActivo('ia');
                     setMenuDesplegableAbierto(false);
                   }}
-                  className="flex items-center gap-2 w-full px-3 py-2.5 text-sm text-left rounded-lg text-gray-300 hover:bg-neu-border/20 hover:text-white transition-colors"
+                  className="flex items-center gap-2 w-full px-3 py-2.5 text-xs text-left rounded-xl text-ink-300 hover:bg-purple-500/10 hover:text-purple-100 transition-colors"
                 >
                   <Bot size={16} />
                   Astrónomo IA
@@ -206,20 +252,22 @@ const manejaClic = (evento) => {
                     setMenuDesplegableAbierto(!menuDesplegableAbierto);
                   }
                 }}
-                className="flex items-center gap-2 rounded-xl border border-neu-border bg-neu-base px-4 py-3 text-sm font-semibold text-white shadow-2xl hover:bg-neu-border/25 transition-all cursor-pointer"
+                className="flex items-center gap-2 rounded-xl glass-card px-4 py-3 text-xs font-mono tracking-[0.08em] text-ink-100 shadow-glow-subtle hover:bg-white/[0.04] hover:border-purple-400/25 transition-all duration-300 cursor-pointer"
               >
-                <NotebookPen size={18} />
+                <NotebookPen size={18} className="text-purple-300" />
                 <span>{panelActivo !== 'ninguno' ? 'Cerrar panel' : 'Herramientas'}</span>
-                <ChevronUp size={16} className={`transition-transform duration-200 ${menuDesplegableAbierto || panelActivo !== 'ninguno' ? 'rotate-180' : ''}`} />
+                <ChevronUp size={16} className={`text-ink-400 transition-transform duration-200 ${menuDesplegableAbierto || panelActivo !== 'ninguno' ? 'rotate-180' : ''}`} />
               </button>
 
               {/* Pestañas de cambio rápido */}
               {panelActivo !== 'ninguno' && (
-                <div className="flex bg-neu-base border border-neu-border rounded-xl p-1 shadow-2xl items-center gap-1">
+                <div className="flex glass-card rounded-xl p-1 shadow-2xl items-center gap-1">
                   <button
                     onClick={() => setPanelActivo('bitacora')}
-                    className={`px-2.5 py-2 text-xs rounded-lg transition-colors flex items-center gap-1 font-mono ${
-                      panelActivo === 'bitacora' ? 'bg-neu-border/40 text-white font-bold' : 'text-gray-400 hover:text-white'
+                    className={`px-2.5 py-2 text-xs rounded-lg transition-colors flex items-center gap-1 font-mono border ${
+                      panelActivo === 'bitacora'
+                        ? 'bg-purple-500/15 text-purple-100 border-purple-400/25'
+                        : 'text-ink-400 border-transparent hover:text-white hover:bg-white/[0.04]'
                     }`}
                     title="Bitácora"
                   >
@@ -227,8 +275,10 @@ const manejaClic = (evento) => {
                   </button>
                   <button
                     onClick={() => setPanelActivo('guardados')}
-                    className={`px-2.5 py-2 text-xs rounded-lg transition-colors flex items-center gap-1 font-mono ${
-                      panelActivo === 'guardados' ? 'bg-neu-border/40 text-white font-bold' : 'text-gray-400 hover:text-white'
+                    className={`px-2.5 py-2 text-xs rounded-lg transition-colors flex items-center gap-1 font-mono border ${
+                      panelActivo === 'guardados'
+                        ? 'bg-purple-500/15 text-purple-100 border-purple-400/25'
+                        : 'text-ink-400 border-transparent hover:text-white hover:bg-white/[0.04]'
                     }`}
                     title="Lugares guardados"
                   >
@@ -236,8 +286,10 @@ const manejaClic = (evento) => {
                   </button>
                   <button
                     onClick={() => setPanelActivo('ia')}
-                    className={`px-2.5 py-2 text-xs rounded-lg transition-colors flex items-center gap-1 font-mono ${
-                      panelActivo === 'ia' ? 'bg-neu-border/40 text-white font-bold' : 'text-gray-400 hover:text-white'
+                    className={`px-2.5 py-2 text-xs rounded-lg transition-colors flex items-center gap-1 font-mono border ${
+                      panelActivo === 'ia'
+                        ? 'bg-purple-500/15 text-purple-100 border-purple-400/25'
+                        : 'text-ink-400 border-transparent hover:text-white hover:bg-white/[0.04]'
                     }`}
                     title="Astrónomo IA"
                   >
@@ -255,15 +307,21 @@ const manejaClic = (evento) => {
         <AstroPanel
           faseLunar={data?.faseLunar ?? 0}
           lunaFase={data?.lunaFase   ?? 0}
+          onIrAZona={irAZonaObservacion}
         />
 
       </div>
 
       {/* FILA 3 — Pronóstico */}
       <ForecastBar forecast={data?.forecast} dataActual={data} />
+        </div>
+      )}
 
       {introVisible && (
-        <IntroWindow onComplete={completarIntro} />
+        <IntroWindow
+          onComplete={completarIntro}
+          onLeaving={() => setDashboardReady(true)}
+        />
       )}
 
     </div>

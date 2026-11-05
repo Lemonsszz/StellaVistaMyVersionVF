@@ -180,15 +180,27 @@ Cuando recibe ese mensaje, llama `onComplete`.
 
 HTML autocontenido con:
 
-- canvas de estrellas, polvo, nebulosas y meteoros
-- pantalla de bienvenida
-- input de nombre
-- animacion de letras
-- OVNI y rayo tractor
+- aurora de fondo (degradados cosmicos lavanda/iris) y viñeta
+- portal de entrada editorial con titular monumental y CTA "Click para empezar a navegar"
+- boton circular rotatorio "CLICK TO ENTER"
 - transicion warp
 - flash final
 
-Originalmente redirigia a `dashboard.html`. Fue ajustado para avisar al padre si corre dentro de iframe. Mantiene redirect como fallback cuando se abre independiente.
+El fondo de estrellas ya no vive en este HTML. `IntroWindow.jsx` renderiza el componente `Galaxy` (React Bits) detras del iframe y el HTML transparente deja verlo. El iframe reenvia los eventos de puntero al padre mediante `postMessage` para conservar la repulsion de estrellas y el `clickWarp` de Galaxy.
+
+Ya no pide nombre ni muestra pantalla de bienvenida con input. Al hacer click (o presionar Enter/Espacio) ejecuta la transicion warp y avisa al padre mediante `postMessage({ type: 'stellavista:intro-complete' })`. Mantiene redirect a `dashboard.html` como fallback cuando se abre independiente.
+
+### `src/components/Galaxy.jsx` / `Galaxy.css`
+
+Componente instalado con `npx shadcn@latest add @react-bits/Galaxy-JS-CSS`. Renderiza un campo de estrellas WebGL2 con vuelo continuo, parpadeo, warp al click y repulsion con el cursor. La paleta se define en `IntroWindow.jsx` con `starColors` (maximo 4 colores). Tambien acepta `hueShift` + `saturation`, `glowIntensity`, `flareIntensity`, `density`, `starSpeed`, `opacity`, `lightMode` y `backgroundColor`.
+
+Ajustes de rendimiento aplicados: `density={0.9}`, `glowIntensity={0.3}`, `flareIntensity={0.9}`, `starSpeed={0.4}`, `starSize={1.35}`, `layers={2}`, `fps={30}`, `dpr={0.7}` y `opacity={0.95}`. El prop `fps` es una modificacion local del componente: limita cuantos frames se dibujan por segundo. `dpr` limita la resolucion interna (0.7x; el navegador la escala, las estrellas se ven como puntos suaves). Claves de coste: solo `layers`, `dpr` y `fps` afectan el trabajo del shader; `density`, `glowIntensity`, `flareIntensity` y `starSize` son gratis (solo cambian uniforms).
+
+El aurora del HTML ahora es un degradado estatico (sin `filter: blur` animado), los eventos de puntero del iframe se agrupan por frame antes de reenviarse y el warp ya no usa `shadowBlur` por estrella (se simula con un segundo trazo ancho y translucido).
+
+Ademas, `App.jsx` no monta el dashboard (mapa MapLibre incluido) mientras el portal esta visible. El intro envia `stellavista:intro-leaving` al arrancar el warp; en ese momento se monta el dashboard detras y Galaxy se congela con `disableAnimation`. Asi el intro carga sin competir con MapLibre ni con las peticiones de tiles.
+
+Nota: se quito la llamada a `WEBGL_lose_context` en el cleanup para que React StrictMode (desarrollo) no invalide el contexto en el doble montaje del efecto.
 
 ### `MapaInteractivo.jsx`
 
@@ -331,7 +343,7 @@ Usado solo dentro de `new_components/index.html`.
 
 La app principal usa JetBrains Mono desde `index.html`.
 
-La intro usa Orbitron e Inter desde su propio HTML.
+La intro usa Inter (300/400/500/600) desde su propio HTML, con estetica editorial y acentos violeta.
 
 ## Variables de entorno
 

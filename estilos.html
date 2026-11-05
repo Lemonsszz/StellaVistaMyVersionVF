@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-[#05060d] text-slate-100 antialiased selection:bg-purple-500/30 selection:text-purple-200" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>StellaVista — Observatorio de Cielo Profundo · Bolivia</title>
+<!-- Google Fonts: Plus Jakarta Sans & Space Grotesk -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;family=Space+Grotesk:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 CDN with forms & container queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script data-purpose="tailwind-config">
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"Space Grotesk"', 'monospace'],
+          },
+          colors: {
+            cosmos: {
+              950: '#05060d',
+              900: '#090a16',
+              850: '#0e1022',
+              800: '#14172e',
+            },
+            ethereal: {
+              purple: '#c084fc',
+              lavender: '#e0e7ff',
+              indigo: '#818cf8',
+              glow: 'rgba(192, 132, 252, 0.15)',
+            }
+          },
+          boxShadow: {
+            'glow-subtle': '0 0 35px -5px rgba(168, 85, 247, 0.18)',
+            'glow-dock': '0 10px 40px -10px rgba(0, 0, 0, 0.8), 0 0 20px -5px rgba(192, 132, 252, 0.12)',
+            'glass-inset': 'inset 0 1px 0 0 rgba(255, 255, 255, 0.08)',
+          }
+        }
+      }
+    }
+  </script>
+<!-- Custom Styles for Deep-Sky Atmosphere -->
+<style data-purpose="celestial-canvas-styling">
+    /* Deep ethereal backdrop glow */
+    body {
+      background-color: #05060d;
+      background-image: 
+        radial-gradient(circle at 18% 22%, rgba(147, 51, 234, 0.08) 0%, transparent 45%),
+        radial-gradient(circle at 82% 78%, rgba(99, 102, 241, 0.06) 0%, transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(192, 132, 252, 0.03) 0%, transparent 60%);
+      background-attachment: fixed;
+    }
+
+    /* Ambient Starlight Pattern */
+    .starlight-layer {
+      background-image: radial-gradient(1px 1px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+                        radial-gradient(1.2px 1.2px at 140px 170px, rgba(224, 231, 255, 0.8), rgba(0,0,0,0)),
+                        radial-gradient(1px 1px at 280px 90px, rgba(192, 132, 252, 0.9), rgba(0,0,0,0)),
+                        radial-gradient(1.5px 1.5px at 420px 240px, #ffffff, rgba(0,0,0,0)),
+                        radial-gradient(0.8px 0.8px at 560px 120px, rgba(255, 255, 255, 0.7), rgba(0,0,0,0)),
+                        radial-gradient(1px 1px at 700px 310px, rgba(168, 85, 247, 0.8), rgba(0,0,0,0)),
+                        radial-gradient(1.2px 1.2px at 850px 180px, #ffffff, rgba(0,0,0,0));
+      background-size: 900px 450px;
+    }
+
+    /* Ultra-clean custom glass panel */
+    .glass-card {
+      background: rgba(9, 11, 22, 0.58);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    /* Custom subtle scrollbar */
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(192, 132, 252, 0.3);
+    }
+  </style>
+</head>
+<body class="h-full flex flex-col overflow-hidden text-slate-200 font-sans relative selection:bg-purple-500/20">
+<!-- BEGIN: Ambient Celestial Background Layer -->
+<div aria-hidden="true" class="absolute inset-0 pointer-events-none starlight-layer opacity-45 z-0"></div>
+<div class="absolute -top-40 -left-40 w-96 h-96 bg-purple-900/10 rounded-full blur-[140px] pointer-events-none"></div>
+<div class="absolute bottom-10 right-10 w-[30rem] h-[30rem] bg-indigo-950/20 rounded-full blur-[160px] pointer-events-none"></div>
+<!-- END: Ambient Celestial Background Layer -->
+<!-- BEGIN: TopNavigation -->
+<header class="relative z-20 w-full px-6 py-4 flex items-center justify-between border-b border-white/[0.04]">
+<!-- Brand & Geolocation -->
+<div class="flex items-center gap-6">
+<a class="flex items-center gap-2.5 group" data-purpose="brand-link" href="#">
+<span class="w-2 h-2 rounded-full bg-purple-400 shadow-[0_0_10px_#c084fc] transition-transform duration-300 group-hover:scale-125"></span>
+<span class="font-mono tracking-[0.28em] text-[13px] uppercase font-semibold text-white/95">StellaVista</span>
+</a>
+<div class="hidden md:flex items-center text-[11px] font-mono tracking-widest text-slate-400/80 gap-3 border-l border-white/[0.08] pl-5">
+<span class="text-slate-300">18°29'S · 68°08'O</span>
+<span class="text-white/20">/</span>
+<span>ALTIPLANO BOLIVIANO</span>
+<span class="text-white/20">/</span>
+<span class="flex items-center gap-1.5 text-slate-400">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400/80"></span>
+          SEÑAL ESTABLE
+        </span>
+</div>
+</div>
+<!-- Center Status Pill -->
+<div class="hidden lg:flex items-center gap-2 px-4 py-1.5 rounded-full glass-card border-white/[0.06] text-xs font-mono tracking-wider text-slate-300">
+<svg class="w-3.5 h-3.5 text-purple-300 animate-pulse" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+</svg>
+<span>OBSERVATORIO DE CIELO PROFUNDO</span>
+<span class="text-purple-400/60">•</span>
+<span class="text-slate-400">FASE CERO</span>
+</div>
+<!-- Right Controls -->
+<div class="flex items-center gap-3">
+<button class="px-3.5 py-1.5 rounded-full border border-white/[0.08] bg-white/[0.02] hover:bg-white/[0.06] text-xs font-mono tracking-wider text-slate-300 transition-all duration-200 flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-purple-400/70"></span>
+        MODO NOCTURNO
+      </button>
+<button class="px-4 py-1.5 rounded-full bg-gradient-to-r from-purple-500/20 to-indigo-500/20 hover:from-purple-500/30 hover:to-indigo-500/30 border border-purple-400/30 text-xs font-mono tracking-wider text-purple-200 shadow-glow-subtle transition-all duration-300 flex items-center gap-2">
+<span>PLANETARIO 3D</span>
+<svg class="w-3.5 h-3.5 text-purple-300" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+</svg>
+</button>
+</div>
+</header>
+<!-- END: TopNavigation -->
+<!-- BEGIN: MainDashboardWorkspace -->
+<main class="relative flex-1 w-full overflow-hidden p-4 md:p-6 grid grid-cols-12 gap-5 z-10">
+<!-- BEGIN: LeftAnalyticsPanel -->
+<aside class="col-span-12 lg:col-span-3 xl:col-span-3 flex flex-col gap-4 overflow-y-auto pr-1" data-purpose="atmospheric-telemetry">
+<!-- Primary Score Card -->
+<section class="glass-card rounded-2xl p-5 border border-white/[0.08] relative overflow-hidden" data-purpose="night-score-card">
+<div class="flex items-center justify-between mb-4">
+<span class="text-[10px] uppercase font-mono tracking-[0.2em] text-slate-400">Índice Nocturno</span>
+<span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20">LIVE METRICS</span>
+</div>
+<div class="flex items-baseline gap-2 mb-1">
+<span class="text-5xl font-mono font-light tracking-tight text-white">55</span>
+<span class="text-xl font-mono text-slate-500 font-light">/100</span>
+</div>
+<p class="text-xs text-slate-400 font-normal tracking-wide mb-5">Condiciones Atmosféricas Parciales</p>
+<!-- Progress bar line with celestial violet glow -->
+<div class="w-full bg-white/[0.06] h-1.5 rounded-full overflow-hidden mb-6">
+<div class="bg-gradient-to-r from-indigo-400 via-purple-400 to-purple-300 h-full rounded-full" style="width: 55%;"></div>
+</div>
+<!-- Metric Grid -->
+<div class="grid grid-cols-2 gap-2.5">
+<div class="p-3 rounded-xl bg-white/[0.02] border border-white/[0.04]">
+<span class="block text-[10px] font-mono uppercase tracking-wider text-slate-400 mb-1">Nubes</span>
+<span class="text-lg font-mono font-medium text-slate-100">0%</span>
+</div>
+<div class="p-3 rounded-xl bg-white/[0.02] border border-white/[0.04]">
+<span class="block text-[10px] font-mono uppercase tracking-wider text-slate-400 mb-1">Lunar</span>
+<span class="text-lg font-mono font-medium text-slate-100">77%</span>
+</div>
+<div class="p-3 rounded-xl bg-white/[0.02] border border-white/[0.04]">
+<span class="block text-[10px] font-mono uppercase tracking-wider text-slate-400 mb-1">Viento</span>
+<span class="text-lg font-mono font-medium text-slate-100">11.6 <span class="text-xs text-slate-400">km/h</span></span>
+</div>
+<div class="p-3 rounded-xl bg-white/[0.02] border border-white/[0.04]">
+<span class="block text-[10px] font-mono uppercase tracking-wider text-slate-400 mb-1">Altitud</span>
+<span class="text-lg font-mono font-medium text-slate-100">3,702 <span class="text-xs text-slate-400">m</span></span>
+</div>
+</div>
+</section>
+<!-- Bortle Scale Minimal Card -->
+<section class="glass-card rounded-2xl p-5 border border-white/[0.08]" data-purpose="bortle-scale-card">
+<div class="flex items-center justify-between mb-3">
+<span class="text-[10px] uppercase font-mono tracking-[0.2em] text-slate-400">Escala de Cielo Oscuro</span>
+<span class="text-xs font-mono font-medium text-purple-300 px-2 py-0.5 rounded bg-purple-500/10">Clase 6</span>
+</div>
+<h3 class="text-sm font-medium text-white mb-1">Periferia Suburbana · Lago Uru Uru</h3>
+<p class="text-xs text-slate-400/90 leading-relaxed mb-4">
+          Luminiscencia del cielo evidente en el horizonte norteño. SQM estimado en 19.32 mag/arcsec².
+        </p>
+<!-- Photon Distribution Arc Representation -->
+<div class="space-y-1.5 pt-2 border-t border-white/[0.06]">
+<div class="flex justify-between text-[11px] font-mono text-slate-400">
+<span>SQM Calibrado</span>
+<span class="text-slate-200">19.32 ± 0.04</span>
+</div>
+<div class="flex justify-between text-[11px] font-mono text-slate-400">
+<span>Visibilidad NELM</span>
+<span class="text-slate-200">5.5 mag</span>
+</div>
+</div>
+</section>
+<!-- Layer Control Toggle -->
+<section class="glass-card rounded-2xl p-4 border border-white/[0.08] flex items-center justify-between" data-purpose="layer-toggle-widget">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-300">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"></path>
+</svg>
+</div>
+<div>
+<span class="text-xs font-medium text-slate-200 block">Filtro de Contaminación</span>
+<span class="text-[10px] font-mono text-slate-400">Modelo Satelital VIIRS</span>
+</div>
+</div>
+<button aria-pressed="true" class="w-10 h-5 bg-purple-500/30 rounded-full p-0.5 border border-purple-400/40 relative flex items-center transition-colors" type="button">
+<span class="w-4 h-4 rounded-full bg-purple-200 shadow-md transform translate-x-5 transition-transform duration-200"></span>
+</button>
+</section>
+</aside>
+<!-- END: LeftAnalyticsPanel -->
+<!-- BEGIN: CentralCartographicMap -->
+<section class="col-span-12 lg:col-span-6 xl:col-span-6 flex flex-col relative rounded-2xl overflow-hidden glass-card border border-white/[0.08]" data-purpose="sky-map-viewport">
+<!-- Top subtle map HUD -->
+<div class="absolute top-4 left-4 right-4 z-20 flex items-center justify-between pointer-events-none">
+<div class="pointer-events-auto flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#070914]/80 backdrop-blur-md border border-white/[0.08] text-xs font-mono text-slate-300">
+<span class="w-2 h-2 rounded-full bg-purple-400 animate-ping"></span>
+<span>Sondeo Satelital Activo</span>
+</div>
+<div class="pointer-events-auto flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#070914]/80 backdrop-blur-md border border-white/[0.08] text-[11px] font-mono text-slate-400">
+<span>LAT <span class="text-slate-200">-18.0032</span></span>
+<span class="text-slate-600">/</span>
+<span>LNG <span class="text-slate-200">-67.2475</span></span>
+</div>
+</div>
+<!-- Map Graphic Representation (Minimal, Elegant, Ethereal rings) -->
+<div class="relative w-full h-full min-h-[460px] flex items-center justify-center bg-[#070913] overflow-hidden">
+<!-- Cartographic Grid Lines -->
+<svg class="absolute inset-0 w-full h-full opacity-15 stroke-white/20" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<pattern height="60" id="grid" patternunits="userSpaceOnUse" width="60">
+<path d="M 60 0 L 0 0 0 60" fill="none" stroke-width="0.7"></path>
+</pattern>
+</defs>
+<rect fill="url(#grid)" height="100%" width="100%"></rect>
+</svg>
+<!-- Simulated Topography Contours / Low Opacity Rings -->
+<div class="absolute w-[620px] h-[620px] rounded-full border border-purple-500/5 bg-purple-500/[0.015] pointer-events-none"></div>
+<div class="absolute w-[480px] h-[480px] rounded-full border border-indigo-500/10 bg-indigo-500/[0.02] pointer-events-none"></div>
+<div class="absolute w-[360px] h-[360px] rounded-full border border-purple-400/15 bg-purple-400/[0.03] pointer-events-none"></div>
+<div class="absolute w-[240px] h-[240px] rounded-full border border-purple-400/25 bg-purple-400/[0.05] pointer-events-none shadow-[0_0_80px_rgba(192,132,252,0.08)]"></div>
+<div class="absolute w-[120px] h-[120px] rounded-full border border-purple-300/40 bg-purple-300/[0.08] pointer-events-none"></div>
+<!-- Central Pin / Active Observation Base -->
+<div class="relative z-10 flex flex-col items-center">
+<div class="relative flex items-center justify-center">
+<span class="absolute w-8 h-8 rounded-full bg-purple-500/30 animate-ping"></span>
+<span class="w-3.5 h-3.5 rounded-full bg-white shadow-[0_0_15px_#ffffff] border-2 border-purple-400"></span>
+</div>
+<div class="mt-3 px-3 py-1 rounded-full bg-[#090b18]/90 border border-purple-400/30 shadow-lg text-center backdrop-blur-md">
+<p class="text-xs font-medium text-white tracking-wide">Lago Uru Uru</p>
+<p class="text-[9px] font-mono text-purple-300 tracking-wider uppercase">Estación Primaria</p>
+</div>
+</div>
+<!-- Peripheral Location Markers (Clean, Minimal, Non-intrusive) -->
+<div class="absolute top-[28%] left-[24%] flex flex-col items-center opacity-75 hover:opacity-100 transition-opacity">
+<span class="w-2 h-2 rounded-full bg-slate-400/80 mb-1.5"></span>
+<span class="text-[11px] font-mono text-slate-300 tracking-wider bg-black/40 px-2 py-0.5 rounded backdrop-blur-sm">Corque</span>
+</div>
+<div class="absolute bottom-[26%] left-[32%] flex flex-col items-center opacity-75 hover:opacity-100 transition-opacity">
+<span class="w-2 h-2 rounded-full bg-slate-400/80 mb-1.5"></span>
+<span class="text-[11px] font-mono text-slate-300 tracking-wider bg-black/40 px-2 py-0.5 rounded backdrop-blur-sm">Turco</span>
+</div>
+<div class="absolute bottom-[32%] right-[26%] flex flex-col items-center opacity-75 hover:opacity-100 transition-opacity">
+<span class="w-2 h-2 rounded-full bg-slate-400/80 mb-1.5"></span>
+<span class="text-[11px] font-mono text-slate-300 tracking-wider bg-black/40 px-2 py-0.5 rounded backdrop-blur-sm">Huanuni</span>
+</div>
+<div class="absolute top-[20%] right-[22%] flex flex-col items-center opacity-60 hover:opacity-100 transition-opacity">
+<span class="w-1.5 h-1.5 rounded-full bg-slate-500 mb-1.5"></span>
+<span class="text-[10px] font-mono text-slate-400 tracking-wider bg-black/40 px-2 py-0.5 rounded backdrop-blur-sm">Patacamaya</span>
+</div>
+<!-- Floating Cartography Controls -->
+<div class="absolute bottom-4 left-4 z-20 flex items-center gap-2">
+<button class="px-3 py-1.5 rounded-xl bg-black/60 hover:bg-black/80 backdrop-blur-md border border-white/[0.08] text-xs font-mono text-slate-300 flex items-center gap-2 transition-colors">
+<svg class="w-3.5 h-3.5 text-purple-300" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>Capas Cartográficas</span>
+</button>
+</div>
+<div class="absolute bottom-4 right-4 z-20 text-[10px] font-mono text-slate-500 bg-black/40 px-2.5 py-1 rounded backdrop-blur-sm">
+          MapLibre · Modelo Topográfico Boliviano
+        </div>
+</div>
+</section>
+<!-- END: CentralCartographicMap -->
+<!-- BEGIN: RightCelestialObjectsPanel -->
+<aside class="col-span-12 lg:col-span-3 xl:col-span-3 flex flex-col gap-4 overflow-y-auto" data-purpose="ephemeris-and-targets">
+<!-- Lunar Phase Widget -->
+<section class="glass-card rounded-2xl p-5 border border-white/[0.08]" data-purpose="lunar-status">
+<div class="flex items-center justify-between mb-4">
+<span class="text-[10px] uppercase font-mono tracking-[0.2em] text-slate-400">Fase Lunar</span>
+<span class="text-xs font-mono text-purple-300">77% Iluminación</span>
+</div>
+<div class="flex items-center gap-4">
+<!-- Stylized Lunar Disk -->
+<div class="relative w-14 h-14 rounded-full bg-slate-900 border border-white/20 shadow-[0_0_20px_rgba(255,255,255,0.1)] flex items-center justify-center overflow-hidden">
+<div class="absolute right-0 top-0 bottom-0 w-10 bg-slate-100 rounded-l-full shadow-inner opacity-90"></div>
+<div class="absolute right-3.5 top-0 bottom-0 w-5 bg-slate-900/60 rounded-full"></div>
+</div>
+<div>
+<h4 class="text-sm font-medium text-white">Gibosa Menguante</h4>
+<p class="text-xs text-slate-400 font-mono mt-0.5">Ocaso Lunar: 04:18 AM</p>
+<p class="text-[11px] text-purple-300/80 font-mono mt-1">Interferencia lumínica moderada</p>
+</div>
+</div>
+</section>
+<!-- Visible Planetary Targets -->
+<section class="glass-card rounded-2xl p-5 border border-white/[0.08]" data-purpose="planetary-alignments">
+<div class="flex items-center justify-between mb-3">
+<span class="text-[10px] uppercase font-mono tracking-[0.2em] text-slate-400">Planetas Visibles</span>
+<span class="text-[10px] font-mono text-slate-500">AZIMUT / ALT</span>
+</div>
+<ul class="space-y-2.5">
+<li class="flex items-center justify-between py-1.5 border-b border-white/[0.04]">
+<div class="flex items-center gap-2.5">
+<span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
+<div>
+<span class="text-xs font-medium text-slate-100 block">Júpiter</span>
+<span class="text-[10px] font-mono text-slate-400">Alt 47° · Az 316°</span>
+</div>
+</div>
+<span class="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-200 border border-purple-500/20">VISIBLE</span>
+</li>
+<li class="flex items-center justify-between py-1.5 border-b border-white/[0.04]">
+<div class="flex items-center gap-2.5">
+<span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
+<div>
+<span class="text-xs font-medium text-slate-100 block">Marte</span>
+<span class="text-[10px] font-mono text-slate-400">Alt 41° · Az 314°</span>
+</div>
+</div>
+<span class="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-200 border border-purple-500/20">VISIBLE</span>
+</li>
+<li class="flex items-center justify-between py-1.5 border-b border-white/[0.04]">
+<div class="flex items-center gap-2.5">
+<span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
+<div>
+<span class="text-xs font-medium text-slate-100 block">Venus</span>
+<span class="text-[10px] font-mono text-slate-400">Alt 64° · Az 88°</span>
+</div>
+</div>
+<span class="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-200 border border-purple-500/20">VISIBLE</span>
+</li>
+<li class="flex items-center justify-between py-1.5">
+<div class="flex items-center gap-2.5 opacity-40">
+<span class="w-1.5 h-1.5 rounded-full bg-slate-600"></span>
+<div>
+<span class="text-xs font-medium text-slate-400 block">Saturno</span>
+<span class="text-[10px] font-mono text-slate-500">Bajo horizonte</span>
+</div>
+</div>
+<span class="text-[10px] font-mono px-2 py-0.5 rounded bg-white/[0.04] text-slate-500">OCULTO</span>
+</li>
+</ul>
+</section>
+<!-- Deep Sky Catalogue -->
+<section class="glass-card rounded-2xl p-5 border border-white/[0.08]" data-purpose="deep-sky-targets">
+<div class="flex items-center justify-between mb-3">
+<span class="text-[10px] uppercase font-mono tracking-[0.2em] text-slate-400">Espacio Profundo</span>
+<span class="text-[10px] font-mono text-slate-500">MAGNITUD</span>
+</div>
+<div class="space-y-2 text-xs">
+<div class="flex items-center justify-between p-2 rounded-lg bg-white/[0.02] border border-white/[0.03]">
+<div>
+<span class="font-medium text-slate-200">M42 · Nebulosa de Orión</span>
+<span class="block text-[10px] font-mono text-slate-400">Condición: Excelente</span>
+</div>
+<span class="font-mono text-purple-300">4.0 mag</span>
+</div>
+<div class="flex items-center justify-between p-2 rounded-lg bg-white/[0.02] border border-white/[0.03]">
+<div>
+<span class="font-medium text-slate-200">M45 · Cúmulo Pléyades</span>
+<span class="block text-[10px] font-mono text-slate-400">Condición: Óptima</span>
+</div>
+<span class="font-mono text-purple-300">1.6 mag</span>
+</div>
+</div>
+</section>
+</aside>
+<!-- END: RightCelestialObjectsPanel -->
+</main>
+<!-- END: MainDashboardWorkspace -->
+<!-- BEGIN: BottomForecastDock -->
+<footer class="relative z-20 px-6 pb-5 pt-2" data-purpose="bottom-temporal-dock">
+<div class="max-w-6xl mx-auto glass-card rounded-2xl p-3 border border-white/[0.08] shadow-glow-dock">
+<div class="flex flex-col md:flex-row items-center justify-between gap-4">
+<!-- Dock Label -->
+<div class="flex items-center gap-3 pl-2">
+<span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
+<div>
+<span class="text-[10px] uppercase font-mono tracking-widest text-slate-400 block">Línea Temporal de Observación</span>
+<span class="text-xs font-medium text-white">Pronóstico Horario Nocturno</span>
+</div>
+</div>
+<!-- Hourly Forecast Pills -->
+<div class="flex items-center gap-2 overflow-x-auto w-full md:w-auto py-1 px-1">
+<!-- Slot 10:00 -->
+<button class="flex flex-col items-center px-4 py-2 rounded-xl bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.04] transition-all">
+<span class="text-[10px] font-mono text-slate-400">10:00</span>
+<span class="text-sm font-mono font-medium text-slate-200 mt-0.5">52</span>
+<span class="w-5 h-0.5 bg-slate-600 rounded-full mt-1.5"></span>
+</button>
+<!-- Slot 11:00 -->
+<button class="flex flex-col items-center px-4 py-2 rounded-xl bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.04] transition-all">
+<span class="text-[10px] font-mono text-slate-400">11:00</span>
+<span class="text-sm font-mono font-medium text-slate-200 mt-0.5">55</span>
+<span class="w-5 h-0.5 bg-slate-600 rounded-full mt-1.5"></span>
+</button>
+<!-- Active Slot 12:00 (Highlighted with modern purple glow) -->
+<button class="flex flex-col items-center px-4 py-2 rounded-xl bg-purple-500/15 border border-purple-400/40 shadow-glow-subtle transition-all">
+<span class="text-[10px] font-mono text-purple-300 font-semibold">12:00</span>
+<span class="text-sm font-mono font-medium text-white mt-0.5">55</span>
+<span class="w-5 h-0.5 bg-purple-400 rounded-full mt-1.5 shadow-[0_0_8px_#c084fc]"></span>
+</button>
+<!-- Slot 13:00 -->
+<button class="flex flex-col items-center px-4 py-2 rounded-xl bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.04] transition-all">
+<span class="text-[10px] font-mono text-slate-400">13:00</span>
+<span class="text-sm font-mono font-medium text-slate-200 mt-0.5">58</span>
+<span class="w-5 h-0.5 bg-slate-600 rounded-full mt-1.5"></span>
+</button>
+<!-- Slot 14:00 -->
+<button class="flex flex-col items-center px-4 py-2 rounded-xl bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.04] transition-all">
+<span class="text-[10px] font-mono text-slate-400">14:00</span>
+<span class="text-sm font-mono font-medium text-slate-200 mt-0.5">62</span>
+<span class="w-5 h-0.5 bg-slate-600 rounded-full mt-1.5"></span>
+</button>
+<!-- Slot 15:00 -->
+<button class="flex flex-col items-center px-4 py-2 rounded-xl bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.04] transition-all">
+<span class="text-[10px] font-mono text-slate-400">15:00</span>
+<span class="text-sm font-mono font-medium text-slate-200 mt-0.5">68</span>
+<span class="w-5 h-0.5 bg-slate-600 rounded-full mt-1.5"></span>
+</button>
+<!-- Slot 16:00 -->
+<button class="flex flex-col items-center px-4 py-2 rounded-xl bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.04] transition-all">
+<span class="text-[10px] font-mono text-slate-400">16:00</span>
+<span class="text-sm font-mono font-medium text-slate-200 mt-0.5">74</span>
+<span class="w-5 h-0.5 bg-slate-600 rounded-full mt-1.5"></span>
+</button>
+</div>
+<!-- Quick Action Trigger -->
+<button class="hidden lg:flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/[0.08] text-xs font-mono text-slate-200 transition-colors">
+<span>Bitácora de Campo</span>
+<svg class="w-3.5 h-3.5 text-purple-300" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</div>
+</div>
+</footer>
+<!-- END: BottomForecastDock -->
+<!-- JavaScript: Interaction Handlers -->
+<script data-purpose="dock-interactivity">
+    // Add interactive click behavior to timeline forecast buttons
+    document.querySelectorAll('[data-purpose="bottom-temporal-dock"] button').forEach((btn) => {
+      btn.addEventListener('click', function() {
+        if (!this.querySelector('.font-mono')) return;
+        document.querySelectorAll('[data-purpose="bottom-temporal-dock"] button').forEach(b => {
+          b.classList.remove('bg-purple-500/15', 'border-purple-400/40', 'shadow-glow-subtle');
+          b.classList.add('bg-white/[0.02]', 'border-white/[0.04]');
+        });
+        this.classList.remove('bg-white/[0.02]', 'border-white/[0.04]');
+        this.classList.add('bg-purple-500/15', 'border-purple-400/40', 'shadow-glow-subtle');
+      });
+    });
+  </script>
+</body></html>

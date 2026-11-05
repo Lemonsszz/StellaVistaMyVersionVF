@@ -1,0 +1,247 @@
+/* src/components/BubbleMenu.css
+   Overlay de planetas con la estética cosmos/violeta de StellaVista. */
+
+.bubble-menu-items {
+  position: fixed;
+  inset: 0;
+  z-index: 220;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 4.5rem 1.5rem 3rem;
+  overflow-y: auto;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(124, 58, 237, 0.22), transparent 55%),
+    radial-gradient(circle at 82% 82%, rgba(99, 102, 241, 0.16), transparent 50%),
+    rgba(3, 4, 10, 0.82);
+  -webkit-backdrop-filter: blur(18px) saturate(125%);
+  backdrop-filter: blur(18px) saturate(125%);
+}
+
+.bubble-menu-heading {
+  max-width: 42rem;
+  text-align: center;
+  animation: bubble-heading-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes bubble-heading-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.bubble-menu-kicker {
+  margin: 0 0 0.55rem;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(192, 132, 252, 0.9);
+}
+
+.bubble-menu-title {
+  margin: 0;
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: #f3f4ff;
+  text-shadow: 0 0 40px rgba(168, 85, 247, 0.35);
+}
+
+.bubble-menu-subtitle {
+  margin: 0.65rem auto 0;
+  max-width: 34rem;
+  font-size: 0.78rem;
+  line-height: 1.6;
+  color: #9aa0bf;
+}
+
+.bubble-menu-hint {
+  margin: 0.25rem 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-align: center;
+  color: rgba(114, 121, 151, 0.9);
+}
+
+.bubble-menu-close {
+  position: absolute;
+  top: 1.35rem;
+  right: 1.35rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: #c3c7e2;
+  font-size: 1.35rem;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    color 0.25s ease,
+    border-color 0.25s ease,
+    background-color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.bubble-menu-close:hover {
+  color: #ffffff;
+  border-color: rgba(192, 132, 252, 0.45);
+  background: rgba(192, 132, 252, 0.12);
+  transform: rotate(90deg);
+}
+
+.pill-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  justify-content: center;
+  gap: 1.4rem 1.15rem;
+  width: 100%;
+  max-width: 880px;
+  margin: 0;
+  padding: 0.5rem 0;
+  list-style: none;
+}
+
+.pill-col {
+  display: flex;
+}
+
+.pill-link {
+  --item-rot: 0deg;
+  --pill-bg: #0c0f20;
+  --pill-color: #e0e7ff;
+  --hover-bg: #c084fc;
+  --hover-color: #05060d;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 0.9rem;
+  min-width: 15.5rem;
+  padding: 0.8rem 1.4rem 0.8rem 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 9999px;
+  background: var(--pill-bg);
+  color: var(--pill-color);
+  font-family: var(--font-sans);
+  text-align: left;
+  cursor: pointer;
+  transform: rotate(var(--item-rot));
+  box-shadow:
+    0 20px 45px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.35s ease,
+    scale 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    rotate 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.pill-link:hover,
+.pill-link:focus-visible {
+  background: var(--hover-bg);
+  color: var(--hover-color);
+  border-color: transparent;
+  /* Propiedades individuales: no pisan el transform que anima GSAP. */
+  scale: 1.055;
+  rotate: calc(-1 * var(--item-rot));
+  box-shadow:
+    0 26px 55px rgba(0, 0, 0, 0.55),
+    0 0 42px -8px var(--hover-bg);
+  outline: none;
+}
+
+.pill-link:focus-visible {
+  outline: 2px solid rgba(224, 231, 255, 0.75);
+  outline-offset: 3px;
+}
+
+.pill-planet {
+  position: relative;
+  flex: 0 0 auto;
+  width: 2.15rem;
+  height: 2.15rem;
+  border-radius: 9999px;
+  background:
+    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.85), transparent 26%),
+    radial-gradient(circle at 70% 76%, rgba(0, 0, 0, 0.45), transparent 62%),
+    radial-gradient(circle at 50% 50%, var(--planet-soft), var(--planet-color) 62%, #0a0c18 100%);
+  box-shadow:
+    inset -4px -6px 12px rgba(0, 0, 0, 0.45),
+    0 0 18px -4px var(--planet-color);
+}
+
+.pill-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+  min-width: 0;
+}
+
+.pill-name {
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.015em;
+}
+
+.pill-meta {
+  font-family: var(--font-mono);
+  font-size: 0.56rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0.68;
+  transition: opacity 0.25s ease;
+}
+
+.pill-link:hover .pill-meta,
+.pill-link:focus-visible .pill-meta {
+  opacity: 0.88;
+}
+
+@media (max-width: 900px) {
+  .pill-list {
+    max-width: 30rem;
+  }
+
+  .pill-link {
+    min-width: 100%;
+  }
+
+  .pill-col {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .bubble-menu-items {
+    justify-content: flex-start;
+    padding-top: 5.5rem;
+  }
+
+  .pill-list {
+    flex-direction: column;
+    gap: 0.85rem;
+    max-width: 24rem;
+  }
+
+  .bubble-menu-heading {
+    padding: 0 0.5rem;
+  }
+}

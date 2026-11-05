@@ -6,7 +6,7 @@ import './BitacoraPanel.css';
 
 const STORAGE_KEY = 'stellavista-bitacora';
 
-export const BitacoraPanel = ({ onClose }) => {
+export const BitacoraPanel = () => {
   const { coordinates } = useAstroStore();
 
   const [registros, setRegistros] = useState(() => {
@@ -51,13 +51,6 @@ export const BitacoraPanel = ({ onClose }) => {
 
     setLugar('');
     setNotas('');
-  };
-
-  const eliminar = (id) => {
-    const actualizados = registros.filter((registro) => registro.id !== id);
-    setRegistros(actualizados);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(actualizados));
-    window.dispatchEvent(new Event('storage'));
   };
 
   return (

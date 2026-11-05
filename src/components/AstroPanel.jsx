@@ -1,33 +1,15 @@
 // src/components/AstroPanel.jsx
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as Astronomy from 'astronomy-engine';
+import { ChevronDown } from 'lucide-react';
 import { useAstroStore } from '../store/useAstroStore';
-import { useState } from 'react';
 import { Planetario } from './Planetario';
 import { SolarSystemWindow } from './SolarSystemWindow';
-
-const PLANETAS = [
-  { key: 'Jupiter', label: 'Júpiter' },
-  { key: 'Saturn',  label: 'Saturno' },
-  { key: 'Mars',    label: 'Marte'   },
-  { key: 'Venus',   label: 'Venus'   },
-  { key: 'Mercury', label: 'Mercurio'},
-];
-
-const OBJETOS_PROFUNDOS = [
-  { nombre: 'M42 — Orión',       ra: 83.82,  dec: -5.39  },
-  { nombre: 'M45 — Pléyades',    ra: 56.75,  dec: 24.12  },
-  { nombre: 'M31 — Andrómeda',   ra: 10.68,  dec: 41.27  },
-  { nombre: 'M8  — Laguna',      ra: 270.92, dec: -24.38 },
-  { nombre: 'M22 — Cúmulo Sag.', ra: 279.10, dec: -23.90 },
-  { nombre: 'NGC 104 — 47 Tuc',  ra: 6.02,   dec: -72.08 },
-];
-
-const getVisibilidad = (altitud) => {
-  if (altitud >= 20) return { label: 'VISIBLE',   clase: 'text-astro-sky    bg-astro-sky/10    border-astro-sky/20'    };
-  if (altitud >= 5)  return { label: 'BAJO',      clase: 'text-astro-horizon bg-astro-horizon/10 border-astro-horizon/20' };
-  return               { label: 'NO VISIBLE', clase: 'text-astro-dim    bg-neu-sunken      border-transparent'     };
-};
+import { OBJETOS_PROFUNDOS, PLANETAS } from '../data/catalogoAstronomico';
+import { PLANETAS_INFO } from '../data/planetasInfo';
+import { getVisibilidad } from '../utils/visibilidad';
+import BubbleMenu from './BubbleMenu';
+import { PlanetaDetalle } from './PlanetaDetalle';
 
 // Canvas de la luna
 const LunaCanvas = ({ fraccion, fase }) => {
@@ -46,7 +28,7 @@ const LunaCanvas = ({ fraccion, fase }) => {
     // Fondo — disco oscuro
     ctx.beginPath();
     ctx.arc(cx, cy, r, 0, Math.PI * 2);
-    ctx.fillStyle = '#1a1d35';
+    ctx.fillStyle = '#14172e';
     ctx.fill();
 
     // Parte iluminada
@@ -55,7 +37,7 @@ const LunaCanvas = ({ fraccion, fase }) => {
     ctx.beginPath();
     ctx.arc(cx, cy, r, Math.PI / 2, (3 * Math.PI) / 2);
     ctx.closePath();
-    ctx.fillStyle = '#c8d8f0';
+    ctx.fillStyle = '#e0e7ff';
     ctx.fill();
     ctx.restore();
 
@@ -66,14 +48,14 @@ const LunaCanvas = ({ fraccion, fase }) => {
     ctx.beginPath();
     ctx.ellipse(cx, cy, Math.abs(escala) * r, r, 0, Math.PI / 2, (3 * Math.PI) / 2);
     ctx.closePath();
-    ctx.fillStyle = esCreciente ? 'rgba(0,0,0,1)' : '#1a1d35';
+    ctx.fillStyle = esCreciente ? 'rgba(0,0,0,1)' : '#14172e';
     ctx.fill();
     ctx.restore();
 
     // Borde exterior
     ctx.beginPath();
     ctx.arc(cx, cy, r, 0, Math.PI * 2);
-    ctx.strokeStyle = '#3a4a60';
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.16)';
     ctx.lineWidth = 1;
     ctx.stroke();
   }, [fraccion, fase]);
@@ -83,12 +65,12 @@ const LunaCanvas = ({ fraccion, fase }) => {
       ref={canvasRef}
       width={64}
       height={64}
-      className="rounded-full"
+      className="rounded-full shrink-0 shadow-[0_0_22px_-6px_rgba(224,231,255,0.45)]"
     />
   );
 };
 
-export const AstroPanel = ({ faseLunar, lunaFase }) => {
+export const AstroPanel = ({ faseLunar, lunaFase, onIrAZona }) => {
   const { coordinates } = useAstroStore();
   const ahora    = new Date();
   const observer = new Astronomy.Observer(coordinates.lat, coordinates.lng, 0);
@@ -99,12 +81,13 @@ export const AstroPanel = ({ faseLunar, lunaFase }) => {
       const equatorial = Astronomy.Equator(key, ahora, observer, true, true);
       const horizontal = Astronomy.Horizon(ahora, observer, equatorial.ra, equatorial.dec, 'normal');
       return {
+        key,
         label,
         altitud: Math.round(horizontal.altitude),
         azimut:  Math.round(horizontal.azimuth),
       };
     } catch {
-      return { label, altitud: -90, azimut: 0 };
+      return { key, label, altitud: -90, azimut: 0 };
     }
   });
 
@@ -134,109 +117,176 @@ export const AstroPanel = ({ faseLunar, lunaFase }) => {
   })();
   const [planetarioAbierto, setPlanetarioAbierto] = useState(false);
   const [sistemaSolarAbierto, setSistemaSolarAbierto] = useState(false);
-  
+  const [planetasAbiertos, setPlanetasAbiertos] = useState(false);
+  const [planetaSeleccionado, setPlanetaSeleccionado] = useState(null);
+
+  const planetaActivo =
+    planetas.find((planeta) => planeta.key === planetaSeleccionado) ?? null;
+  const planetasSobreHorizonte = planetas.filter(
+    (planeta) => planeta.altitud >= 5
+  ).length;
+
+  const itemsPlanetas = planetas.map(({ key, label, altitud, azimut }, i) => {
+    const visibilidad = getVisibilidad(altitud);
+    const info = PLANETAS_INFO[key];
+
+    return {
+      key,
+      label,
+      altitud,
+      azimut,
+      rotation: i % 2 === 0 ? -6 : 6,
+      meta: `${visibilidad.label} · ALT ${altitud}° · AZ ${azimut}°`,
+      color: info?.color ?? '#c084fc',
+      colorSuave: info?.colorSuave ?? '#e0e7ff',
+      hoverStyles: {
+        bgColor: info?.color ?? '#c084fc',
+        textColor: '#05060d',
+      },
+    };
+  });
+
   return (
-    <aside className="w-56 bg-neu-base border-l border-neu-border flex flex-col shrink-0 overflow-y-auto">
+    <aside className="w-56 bg-transparent border-l border-white/[0.04] flex flex-col shrink-0 overflow-y-auto gap-3 p-3 font-sans">
 
       {/* Luna */}
-      <div className="mx-3 mt-3 mb-2">
-        <p className="text-[9px] tracking-[0.18em] uppercase text-astro-dim mb-2">
+      <section className="glass-card glass-card-hover animate-card-rise rounded-2xl p-4">
+        <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-ink-400 mb-3">
           Fase lunar
         </p>
-        <div className="bg-neu-raised border border-neu-border rounded-xl shadow-neu-sm p-3 flex items-center gap-3">
+        <div className="flex items-center gap-3">
           <LunaCanvas fraccion={faseLunar / 100} fase={lunaFase ?? 0} />
           <div className="flex-1 min-w-0">
-            <p className="text-[11px] text-astro-text font-medium">{nombreFase}</p>
-            <p className="text-[9px] text-astro-dim mt-0.5">{Math.round(faseLunar)}% iluminación</p>
-            <div className="mt-2 h-1 rounded-full bg-neu-sunken shadow-neu-inset overflow-hidden">
+            <p className="text-xs font-medium text-white">{nombreFase}</p>
+            <p className="text-[10px] font-mono text-ink-400 mt-0.5">{Math.round(faseLunar)}% iluminación</p>
+            <div className="mt-2 h-1 rounded-full bg-white/[0.06] overflow-hidden">
               <div
-                className="h-full rounded-full bg-astro-text transition-all duration-700"
+                className="h-full rounded-full bg-gradient-to-r from-ethereal-indigo to-ethereal-lavender transition-all duration-700"
                 style={{ width: `${faseLunar}%` }}
               />
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Planetas */}
-      <div className="mx-3 mb-2">
-        <p className="text-[9px] tracking-[0.18em] uppercase text-astro-dim mb-2">
-          Planetas visibles
-        </p>
-        <div className="bg-neu-raised border border-neu-border rounded-xl shadow-neu-sm overflow-hidden">
-          {planetas.map(({ label, altitud, azimut }, i) => {
-            const { label: visLabel, clase } = getVisibilidad(altitud);
-            return (
-              <div
-                key={label}
-                className={`
-                  flex items-center justify-between px-3 py-2 text-[10px]
-                  ${i < planetas.length - 1 ? 'border-b border-neu-border' : ''}
-                `}
-              >
-                <div>
-                  <p className="text-astro-text">{label}</p>
-                  {altitud >= 5 && (
-                    <p className="text-astro-dim text-[8px]">
-                      Alt {altitud}° · Az {azimut}°
-                    </p>
-                  )}
-                </div>
-                <span className={`text-[8px] px-1.5 py-0.5 rounded border tracking-wide ${clase}`}>
-                  {visLabel}
+      {/* Planetas — disparador del menu de burbujas */}
+      <section className="glass-card animate-card-rise overflow-hidden rounded-2xl">
+        <button
+          type="button"
+          onClick={() => setPlanetasAbiertos((abierto) => !abierto)}
+          aria-expanded={planetasAbiertos}
+          aria-haspopup="dialog"
+          className="group w-full p-4 text-left transition-colors duration-300 hover:bg-white/[0.035]"
+        >
+          <span className="flex items-center justify-between gap-3">
+            <span className="min-w-0">
+              <span className="mb-1.5 block font-mono text-[10px] uppercase tracking-[0.2em] text-ink-400">
+                Planetas visibles
+              </span>
+              <span className="flex flex-wrap items-center gap-1.5">
+                {planetas.map(({ key, label, altitud }) => {
+                  const info = PLANETAS_INFO[key];
+                  const sobreHorizonte = altitud >= 5;
+                  return (
+                    <span
+                      key={key}
+                      title={`${label}: ${altitud}°`}
+                      className="h-2 w-2 rounded-full transition-transform duration-300 group-hover:scale-125"
+                      style={{
+                        background: info?.color ?? '#c084fc',
+                        boxShadow: sobreHorizonte
+                          ? `0 0 8px ${info?.color ?? '#c084fc'}`
+                          : 'none',
+                        opacity: sobreHorizonte ? 1 : 0.32,
+                      }}
+                    />
+                  );
+                })}
+                <span className="ml-1 font-mono text-[9px] uppercase tracking-[0.08em] text-ink-500">
+                  {planetasSobreHorizonte} sobre el horizonte
                 </span>
-              </div>
-            );
-          })}
-        </div>
-      </div>
+              </span>
+            </span>
+            <ChevronDown
+              size={16}
+              className={`shrink-0 text-ink-500 transition-all duration-300 group-hover:text-ethereal-purple ${
+                planetasAbiertos ? 'rotate-180 text-ethereal-purple' : ''
+              }`}
+            />
+          </span>
+          <span className="mt-2 block font-mono text-[8px] uppercase tracking-[0.16em] text-ink-600 transition-colors duration-300 group-hover:text-ethereal-purple/80">
+            {planetasAbiertos
+              ? 'Cerrar panel de planetas'
+              : 'Toca para desplegar los planetas'}
+          </span>
+        </button>
+      </section>
+
+      <BubbleMenu
+        open={planetasAbiertos}
+        items={itemsPlanetas}
+        onClose={() => setPlanetasAbiertos(false)}
+        onSelect={(item) => {
+          setPlanetasAbiertos(false);
+          setPlanetaSeleccionado(item.key);
+        }}
+        title="Planetas visibles"
+        subtitle="Etiquetas del cielo de ahora mismo. Elige un planeta para ver su ficha, sus datos y la mejor zona de observación."
+      />
+
+      {planetaActivo && (
+        <PlanetaDetalle
+          key={planetaActivo.key}
+          planeta={planetaActivo}
+          onCerrar={() => setPlanetaSeleccionado(null)}
+          onIrAZona={onIrAZona}
+        />
+      )}
 
       {/* Espacio profundo */}
-      <div className="mx-3 mb-3">
-        <p className="text-[9px] tracking-[0.18em] uppercase text-astro-dim mb-2">
+      <section className="glass-card glass-card-hover animate-card-rise rounded-2xl p-4">
+        <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-ink-400 mb-2">
           Espacio profundo
         </p>
-        <div className="bg-neu-raised border border-neu-border rounded-xl shadow-neu-sm overflow-hidden">
-          {objetosProfundos.map(({ nombre, altitud }, i) => {
+        <div className="space-y-1.5">
+          {objetosProfundos.map(({ nombre, altitud }) => {
             const { label: visLabel, clase } = getVisibilidad(altitud);
             return (
               <div
                 key={nombre}
-                className={`
-                  flex items-center justify-between px-3 py-2 text-[10px]
-                  ${i < objetosProfundos.length - 1 ? 'border-b border-neu-border' : ''}
-                `}
+                className="flex items-center justify-between gap-2 p-2 rounded-lg bg-white/[0.02] border border-white/[0.03] hover:border-purple-400/20 hover:bg-white/[0.04] transition-all duration-300"
               >
-                <p className="text-astro-text truncate flex-1 mr-2">{nombre}</p>
-                <span className={`text-[8px] px-1.5 py-0.5 rounded border tracking-wide shrink-0 ${clase}`}>
+                <p className="text-[11px] text-ink-200 truncate flex-1">{nombre}</p>
+                <span className={`text-[8px] font-mono px-1.5 py-0.5 rounded-full border tracking-[0.06em] shrink-0 ${clase}`}>
                   {visLabel}
                 </span>
               </div>
             );
           })}
         </div>
-      </div>
-      <div className="mx-3 mb-3 mt-auto">
-      <button
-        onClick={() => setPlanetarioAbierto(true)}
-        className="w-full py-2.5 rounded-xl bg-neu-raised border border-neu-border shadow-neu-sm text-[9px] tracking-[0.15em] uppercase text-astro-sky hover:text-astro-sky/80 transition-colors"
-      >
-        Abrir planetario
-      </button>
-      <button
-        onClick={() => setSistemaSolarAbierto(true)}
-        className="w-full mt-2 py-2.5 rounded-xl bg-neu-raised border border-neu-border shadow-neu-sm text-[9px] tracking-[0.15em] uppercase text-astro-horizon hover:text-astro-horizon/80 transition-colors"
-      >
-        Abrir sistema solar
-      </button>
-    </div>
+      </section>
 
-    {planetarioAbierto && (
-      <Planetario onCerrar={() => setPlanetarioAbierto(false)} />
-    )}
-    {sistemaSolarAbierto && (
-      <SolarSystemWindow onCerrar={() => setSistemaSolarAbierto(false)} />
-    )}
+      <div className="mt-auto flex flex-col gap-2">
+        <button
+          onClick={() => setPlanetarioAbierto(true)}
+          className="w-full py-2.5 rounded-xl bg-white/[0.02] border border-white/[0.08] text-[10px] font-mono tracking-[0.16em] uppercase text-ethereal-lavender hover:bg-white/[0.06] hover:border-purple-400/30 hover:-translate-y-0.5 transition-all duration-300"
+        >
+          Abrir planetario
+        </button>
+        <button
+          onClick={() => setSistemaSolarAbierto(true)}
+          className="w-full py-2.5 rounded-xl bg-white/[0.02] border border-white/[0.08] text-[10px] font-mono tracking-[0.16em] uppercase text-ethereal-purple hover:bg-white/[0.06] hover:border-purple-400/30 hover:-translate-y-0.5 transition-all duration-300"
+        >
+          Abrir sistema solar
+        </button>
+      </div>
+
+      {planetarioAbierto && (
+        <Planetario onCerrar={() => setPlanetarioAbierto(false)} />
+      )}
+      {sistemaSolarAbierto && (
+        <SolarSystemWindow onCerrar={() => setSistemaSolarAbierto(false)} />
+      )}
     </aside>
   );
 };

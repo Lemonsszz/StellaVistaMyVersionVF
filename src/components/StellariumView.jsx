@@ -9,11 +9,11 @@ export const StellariumView = () => {
   const stellariumUrl = `https://stellarium-web.org{coordinates.lat}&lng=${coordinates.lng}&fov=70&live=true`;
 
   return (
-    <div className="absolute bottom-6 right-6 w-80 h-52 bg-zinc-950 rounded-2xl border border-zinc-800 overflow-hidden shadow-2xl z-20 group">
+    <div className="absolute bottom-6 right-6 w-80 h-52 glass-card rounded-2xl overflow-hidden z-20 group">
       {/* Título del Widget */}
-      <div className="absolute top-0 left-0 w-full p-2 bg-zinc-900/80 backdrop-blur-md flex justify-between items-center border-b border-zinc-800 z-30">
-        <span className="text-[9px] font-bold uppercase tracking-widest text-blue-400 ml-2 flex items-center gap-2">
-          <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-pulse"></span>
+      <div className="absolute top-0 left-0 w-full p-2 bg-cosmos-950/70 backdrop-blur-xl flex justify-between items-center border-b border-white/[0.06] z-30">
+        <span className="text-[9px] font-mono font-medium uppercase tracking-[0.16em] text-purple-200 ml-2 flex items-center gap-2">
+          <span className="w-1.5 h-1.5 bg-ethereal-purple rounded-full animate-pulse shadow-[0_0_8px_#c084fc]"></span>
           Vista en Tiempo Real
         </span>
       </div>
@@ -28,7 +28,7 @@ export const StellariumView = () => {
       ></iframe>
 
       {/* Overlay de interacción (Opcional: para que no robe el scroll del mapa) */}
-      <div className="absolute inset-0 pointer-events-none border-2 border-transparent group-hover:border-blue-500/30 transition-colors rounded-2xl"></div>
+      <div className="absolute inset-0 pointer-events-none border border-transparent group-hover:border-purple-400/30 transition-colors rounded-2xl"></div>
     </div>
   );
 };

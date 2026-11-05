@@ -31,16 +31,18 @@ const SQM_RANGES = {
   9: '<17.0 mag/arcsec^2',
 };
 
+// Rampa morada alineada con las zonas Bortle del mapa y su leyenda.
+// Cada nivel sube en luminosidad para que el número sea legible en el score.
 const BORTLE_COLORS = {
-  1: '#2d1b69',
-  2: '#4c1d95',
-  3: '#2563eb',
-  4: '#38bdf8',
-  5: '#facc15',
-  6: '#fb923c',
-  7: '#f43f5e',
-  8: '#db2777',
-  9: '#a21caf',
+  1: '#6366f1',
+  2: '#818cf8',
+  3: '#8b5cf6',
+  4: '#a78bfa',
+  5: '#c084fc',
+  6: '#d946ef',
+  7: '#e879f9',
+  8: '#f0abfc',
+  9: '#f5d0fe',
 };
 
 const ORURO_BOUNDS = {

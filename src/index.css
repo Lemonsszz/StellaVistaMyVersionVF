@@ -1,15 +1,32 @@
 @import "tailwindcss";
 
 @theme {
-  /* Fondos neumórficos */
-  --color-neu-base:   #0d0f1a;
-  --color-neu-raised: #111520;
-  --color-neu-sunken: #090b14;
-  --color-neu-border: #1e2040;
-  --color-neu-glow:   #1a1d35;
-  --color-neu-shadow: #06070f;
+  /* Superficies — piel cosmos/violeta de la referencia */
+  --color-neu-base:   #05060d;
+  --color-neu-raised: #0a0c18;
+  --color-neu-sunken: #070810;
+  --color-neu-border: #1e2140;
+  --color-neu-glow:   #241f45;
+  --color-neu-shadow: #010207;
 
-  /* Paleta astronómica */
+  /* Tokens de la referencia (estilos.html) */
+  --color-cosmos-950: #05060d;
+  --color-cosmos-900: #090a16;
+  --color-cosmos-850: #0e1022;
+  --color-cosmos-800: #14172e;
+  --color-ethereal-purple:   #c084fc;
+  --color-ethereal-lavender: #e0e7ff;
+  --color-ethereal-indigo:   #818cf8;
+
+  /* Tinta / textos */
+  --color-ink-100: #f3f4ff;
+  --color-ink-200: #dfe2f5;
+  --color-ink-300: #c3c7e2;
+  --color-ink-400: #9aa0bf;
+  --color-ink-500: #727997;
+  --color-ink-600: #4d5372;
+
+  /* Paleta astronómica — estados intactos */
   --color-astro-sky:     #7ecfff;
   --color-astro-blue:    #4a9eff;
   --color-astro-deep:    #2d6be4;
@@ -17,22 +34,160 @@
   --color-astro-void:    #7c3aed;
   --color-astro-horizon: #fb923c;
   --color-astro-ember:   #f59e0b;
-  --color-astro-text:    #c8d8f0;
-  --color-astro-muted:   #5a7090;
-  --color-astro-dim:     #3a4a60;
+  --color-astro-text:    #e0e7ff;
+  --color-astro-muted:   #9aa0bf;
+  --color-astro-dim:     #6b7191;
 
-  /* Sombras neumórficas */
-  --shadow-neu:         -4px -4px 8px #1a1d35, 4px 4px 8px #06070f;
-  --shadow-neu-sm:      -2px -2px 5px #1a1d35, 2px 2px 5px #06070f;
-  --shadow-neu-lg:      -6px -6px 14px #1a1d35, 6px 6px 14px #06070f;
-  --shadow-neu-inset:   inset -2px -2px 5px #1a1d35, inset 2px 2px 5px #06070f;
-  --shadow-neu-pressed: inset -1px -1px 3px #1a1d35, inset 1px 1px 3px #06070f;
-  --shadow-neu-sky:     -4px -4px 8px #1a1d35, 4px 4px 8px #06070f, 0 0 20px rgba(126,207,255,0.10);
-  --shadow-neu-nebula:  -4px -4px 8px #1a1d35, 4px 4px 8px #06070f, 0 0 20px rgba(167,139,250,0.10);
-  --shadow-neu-horizon: -4px -4px 8px #1a1d35, 4px 4px 8px #06070f, 0 0 20px rgba(251,146,60,0.10);
+  /* Sombras — base glass + glow semántico por estado */
+  --shadow-neu:         0 18px 44px rgba(0, 0, 0, 0.45);
+  --shadow-neu-sm:      0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-neu-lg:      0 28px 60px rgba(0, 0, 0, 0.5);
+  --shadow-neu-inset:   inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  --shadow-neu-pressed: inset 0 1px 0 rgba(255, 255, 255, 0.04), inset 0 -10px 20px rgba(0, 0, 0, 0.35);
+  --shadow-neu-sky:
+    0 20px 50px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 32px -8px rgba(126, 207, 255, 0.30);
+  --shadow-neu-nebula:
+    0 20px 50px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 32px -8px rgba(167, 139, 250, 0.34);
+  --shadow-neu-horizon:
+    0 20px 50px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 32px -8px rgba(251, 146, 60, 0.30);
+  --shadow-glow-subtle: 0 0 35px -5px rgba(168, 85, 247, 0.18);
+  --shadow-glow-dock:   0 10px 40px -10px rgba(0, 0, 0, 0.8), 0 0 20px -5px rgba(192, 132, 252, 0.12);
+  --shadow-glass-inset: inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
 
-  /* Tipografía */
-  --font-mono: "JetBrains Mono", "Space Mono", monospace;
+  /* Tipografía de la referencia */
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+
+  --animate-card-rise: card-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  --animate-soft-pulse: soft-pulse 3s ease-in-out infinite;
+
+  @keyframes card-rise {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes soft-pulse {
+    0%, 100% { opacity: 0.55; }
+    50%      { opacity: 1; }
+  }
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  html {
+    background-color: #05060d;
+  }
+
+  body {
+    margin: 0;
+    color: #c3c7e2;
+    font-family: var(--font-sans);
+    background-color: #05060d;
+    background-image:
+      radial-gradient(circle at 18% 22%, rgba(147, 51, 234, 0.10) 0%, transparent 45%),
+      radial-gradient(circle at 82% 78%, rgba(99, 102, 241, 0.08) 0%, transparent 40%),
+      radial-gradient(circle at 50% 50%, rgba(192, 132, 252, 0.04) 0%, transparent 60%);
+    background-attachment: fixed;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: rgba(168, 85, 247, 0.3);
+    color: #e9d5ff;
+  }
+
+  /* Scrollbar fina de la referencia */
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(192, 132, 252, 0.3);
+  }
+}
+
+@layer components {
+  /* Tarjeta glass principal */
+  .glass-card {
+    background:
+      linear-gradient(
+        160deg,
+        rgba(20, 23, 46, 0.55) 0%,
+        rgba(9, 11, 22, 0.68) 60%,
+        rgba(5, 6, 13, 0.72) 100%
+      );
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    box-shadow:
+      0 20px 50px rgba(0, 0, 0, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  /* Microinteracción de elevación */
+  .glass-card-hover {
+    transition:
+      transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 0.35s ease,
+      box-shadow 0.35s ease,
+      background-color 0.35s ease;
+  }
+  .glass-card-hover:hover {
+    transform: translateY(-2px);
+    border-color: rgba(192, 132, 252, 0.26);
+    box-shadow:
+      0 26px 60px rgba(0, 0, 0, 0.55),
+      inset 0 1px 0 rgba(255, 255, 255, 0.10),
+      0 0 30px -8px rgba(168, 85, 247, 0.35);
+  }
+
+  /* Fichas internas de métricas */
+  .glass-tile {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+  }
+
+  .glass-tile-hover {
+    transition:
+      background-color 0.3s ease,
+      border-color 0.3s ease,
+      transform 0.3s ease;
+  }
+  .glass-tile-hover:hover {
+    background: rgba(255, 255, 255, 0.045);
+    border-color: rgba(192, 132, 252, 0.22);
+  }
+
+  /* Capa de estrellas ambiental */
+  .starlight-layer {
+    background-image:
+      radial-gradient(1px 1px at 20px 30px, #ffffff, rgba(0, 0, 0, 0)),
+      radial-gradient(1.2px 1.2px at 140px 170px, rgba(224, 231, 255, 0.8), rgba(0, 0, 0, 0)),
+      radial-gradient(1px 1px at 280px 90px, rgba(192, 132, 252, 0.9), rgba(0, 0, 0, 0)),
+      radial-gradient(1.5px 1.5px at 420px 240px, #ffffff, rgba(0, 0, 0, 0)),
+      radial-gradient(0.8px 0.8px at 560px 120px, rgba(255, 255, 255, 0.7), rgba(0, 0, 0, 0)),
+      radial-gradient(1px 1px at 700px 310px, rgba(168, 85, 247, 0.8), rgba(0, 0, 0, 0)),
+      radial-gradient(1.2px 1.2px at 850px 180px, #ffffff, rgba(0, 0, 0, 0));
+    background-size: 900px 450px;
+  }
 }
 
 .map-container {
@@ -42,4 +197,17 @@
 
 .astro-red {
   filter: sepia(1) hue-rotate(-50deg) saturate(4) brightness(0.7);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .glass-card-hover:hover {
+    transform: none;
+  }
 }

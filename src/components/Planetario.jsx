@@ -56,9 +56,9 @@ const dibujarCielo = (canvas, coordinates, ahora) => {
 
   // Fondo circular
   const gradFondo = ctx.createRadialGradient(cx, cy, 0, cx, cy, radio);
-  gradFondo.addColorStop(0,   '#1a1d35');
-  gradFondo.addColorStop(0.7, '#0d0f1a');
-  gradFondo.addColorStop(1,   '#090b14');
+  gradFondo.addColorStop(0,   '#1a1638');
+  gradFondo.addColorStop(0.7, '#0b0d1d');
+  gradFondo.addColorStop(1,   '#05060d');
   ctx.beginPath();
   ctx.arc(cx, cy, radio, 0, Math.PI * 2);
   ctx.fillStyle = gradFondo;
@@ -69,11 +69,11 @@ const dibujarCielo = (canvas, coordinates, ahora) => {
     const r = radio * (1 - alt / 90);
     ctx.beginPath();
     ctx.arc(cx, cy, r, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(58, 74, 96, 0.4)';
+    ctx.strokeStyle = 'rgba(129, 140, 248, 0.20)';
     ctx.lineWidth   = 0.5;
     ctx.stroke();
-    ctx.fillStyle   = 'rgba(58, 74, 96, 0.6)';
-    ctx.font        = '9px JetBrains Mono, monospace';
+    ctx.fillStyle   = '#727997';
+    ctx.font        = '9px Space Grotesk, monospace';
     ctx.fillText(`${alt}°`, cx + r + 3, cy);
   });
 
@@ -93,13 +93,13 @@ const dibujarCielo = (canvas, coordinates, ahora) => {
     ctx.beginPath();
     ctx.moveTo(x1, y1);
     ctx.lineTo(x2, y2);
-    ctx.strokeStyle = 'rgba(58, 74, 96, 0.5)';
+    ctx.strokeStyle = 'rgba(129, 140, 248, 0.24)';
     ctx.lineWidth   = 0.5;
     ctx.stroke();
     const xL = cx + (radio + 14) * Math.cos(ang);
     const yL = cy + (radio + 14) * Math.sin(ang);
-    ctx.fillStyle  = '#3a4a60';
-    ctx.font       = '10px JetBrains Mono, monospace';
+    ctx.fillStyle  = '#727997';
+    ctx.font       = '10px Space Grotesk, monospace';
     ctx.textAlign  = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(label, xL, yL);
@@ -108,7 +108,7 @@ const dibujarCielo = (canvas, coordinates, ahora) => {
   // Borde del horizonte
   ctx.beginPath();
   ctx.arc(cx, cy, radio, 0, Math.PI * 2);
-  ctx.strokeStyle = '#1e2040';
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
   ctx.lineWidth   = 1.5;
   ctx.stroke();
 
@@ -125,13 +125,13 @@ const dibujarCielo = (canvas, coordinates, ahora) => {
 
       ctx.beginPath();
       ctx.arc(pos.x, pos.y, tamaño, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(200, 216, 240, ${opacidad})`;
+      ctx.fillStyle = `rgba(224, 231, 255, ${opacidad})`;
       ctx.fill();
 
       // Nombre solo para estrellas sobre 20°
       if (hor.altitude > 20) {
-        ctx.fillStyle    = 'rgba(90, 112, 144, 0.8)';
-        ctx.font         = '8px JetBrains Mono, monospace';
+        ctx.fillStyle    = 'rgba(154, 160, 191, 0.85)';
+        ctx.font         = '8px Space Grotesk, monospace';
         ctx.textAlign    = 'left';
         ctx.textBaseline = 'middle';
         ctx.fillText(nombre, pos.x + 4, pos.y);
@@ -161,7 +161,7 @@ const dibujarCielo = (canvas, coordinates, ahora) => {
 
       // Label
       ctx.fillStyle    = color;
-      ctx.font         = 'bold 9px JetBrains Mono, monospace';
+      ctx.font         = 'bold 9px Space Grotesk, monospace';
       ctx.textAlign    = 'left';
       ctx.textBaseline = 'middle';
       ctx.fillText(label, pos.x + 7, pos.y);
@@ -169,7 +169,7 @@ const dibujarCielo = (canvas, coordinates, ahora) => {
   });
 
   // Cruz central — cenit
-  ctx.strokeStyle = 'rgba(58, 74, 96, 0.5)';
+  ctx.strokeStyle = 'rgba(129, 140, 248, 0.24)';
   ctx.lineWidth   = 0.5;
   ctx.beginPath(); ctx.moveTo(cx - 6, cy); ctx.lineTo(cx + 6, cy); ctx.stroke();
   ctx.beginPath(); ctx.moveTo(cx, cy - 6); ctx.lineTo(cx, cy + 6); ctx.stroke();
@@ -185,6 +185,8 @@ export const Planetario = ({ onCerrar }) => {
   useEffect(() => {
     const fecha = new Date();
     fecha.setHours(fecha.getHours() + offset);
+    // La hora simulada es estado derivado del offset; se sincroniza en el efecto.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setHora(fecha);
   }, [offset]);
 
@@ -225,34 +227,35 @@ export const Planetario = ({ onCerrar }) => {
   }, [horaSimulada, coordinates]);
 
   return (
-    <div className="fixed inset-0 bg-neu-base z-50 flex flex-col font-mono">
+    <div className="fixed inset-0 bg-cosmos-950 z-50 flex flex-col font-sans text-ink-300">
 
       {/* Header */}
-      <div className="flex items-center px-4 h-10 border-b border-neu-border shrink-0">
-        <span className="text-[9px] tracking-[0.18em] uppercase text-astro-sky">
+      <div className="flex items-center px-4 h-12 border-b border-white/[0.04] bg-cosmos-950/70 backdrop-blur-xl shrink-0">
+        <span className="flex items-center gap-2 text-[10px] font-mono tracking-[0.2em] uppercase text-purple-200">
+          <span className="w-1.5 h-1.5 rounded-full bg-ethereal-purple shadow-[0_0_10px_#c084fc]" />
           Planetario — {coordinates.lat.toFixed(4)}, {coordinates.lng.toFixed(4)}
         </span>
 
         {/* Control de tiempo */}
         <div className="ml-8 flex items-center gap-3">
-          <span className="text-[9px] text-astro-dim uppercase tracking-widest">Hora</span>
+          <span className="text-[9px] font-mono text-ink-500 uppercase tracking-[0.16em]">Hora</span>
           <button
             onClick={() => setOffset(o => Math.max(o - 1, -12))}
-            className="w-6 h-6 rounded bg-neu-raised border border-neu-border shadow-neu-sm text-astro-text text-xs hover:text-astro-sky transition-colors"
+            className="w-7 h-7 rounded-full bg-white/[0.03] border border-white/[0.08] text-ink-300 text-xs hover:text-purple-200 hover:border-purple-400/30 transition-all"
           >−</button>
-          <span className="text-[11px] text-astro-text tabular-nums min-w-[80px] text-center">
+          <span className="text-[11px] font-mono text-ink-100 tabular-nums min-w-[80px] text-center">
             {horaSimulada.toLocaleTimeString('es-BO', {
               hour: '2-digit', minute: '2-digit', timeZone: 'America/La_Paz'
             })}
           </span>
           <button
             onClick={() => setOffset(o => Math.min(o + 1, 12))}
-            className="w-6 h-6 rounded bg-neu-raised border border-neu-border shadow-neu-sm text-astro-text text-xs hover:text-astro-sky transition-colors"
+            className="w-7 h-7 rounded-full bg-white/[0.03] border border-white/[0.08] text-ink-300 text-xs hover:text-purple-200 hover:border-purple-400/30 transition-all"
           >+</button>
           {offset !== 0 && (
             <button
               onClick={() => setOffset(0)}
-              className="text-[9px] text-astro-horizon uppercase tracking-widest hover:text-astro-text transition-colors"
+              className="text-[9px] font-mono text-astro-horizon uppercase tracking-[0.16em] hover:text-white transition-colors"
             >
               Ahora
             </button>
@@ -261,13 +264,13 @@ export const Planetario = ({ onCerrar }) => {
 
         {/* Leyenda */}
         <div className="ml-auto flex items-center gap-4 mr-4">
-          {PLANETAS_CANVAS.map(({ label, color, key }) => (
-            <span key={key} className="flex items-center gap-1.5 text-[9px] text-astro-dim">
+          {PLANETAS_CANVAS.map(({ color, key }) => (
+            <span key={key} className="flex items-center gap-1.5 text-[9px] font-mono text-ink-500">
               <span className="w-2 h-2 rounded-full" style={{ background: color }} />
               {key}
             </span>
           ))}
-          <span className="flex items-center gap-1.5 text-[9px] text-astro-dim">
+          <span className="flex items-center gap-1.5 text-[9px] font-mono text-ink-500">
             <span className="w-2 h-2 rounded-full bg-astro-text opacity-60" />
             Estrellas
           </span>
@@ -276,17 +279,18 @@ export const Planetario = ({ onCerrar }) => {
         {/* Cerrar */}
         <button
           onClick={onCerrar}
-          className="w-7 h-7 rounded bg-neu-raised border border-neu-border shadow-neu-sm text-astro-muted hover:text-astro-text transition-colors text-sm"
+          className="w-8 h-8 rounded-full bg-white/[0.03] border border-white/[0.08] text-ink-400 hover:text-white hover:border-purple-400/30 transition-all text-sm"
         >
           ✕
         </button>
       </div>
 
       {/* Canvas */}
-      <div className="flex-1 flex items-center justify-center p-6">
+      <div className="relative flex-1 flex items-center justify-center p-6">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(147,51,234,0.08),transparent_60%)]" />
         <canvas
           ref={canvasRef}
-          className="w-full h-full max-w-3xl max-h-[600px]"
+          className="relative w-full h-full max-w-3xl max-h-[600px] shadow-[0_0_80px_-20px_rgba(168,85,247,0.35)]"
           style={{ borderRadius: '50%' }}
         />
       </div>

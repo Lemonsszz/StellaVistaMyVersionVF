@@ -9,20 +9,20 @@ export const eventosAstronomicos = {
   5: [], // Junio
   6: [], // Julio
 
-  // AGOSTO 2026
-  9: [
+  // NOVIEMBRE 2026
+  10: [
   {
-    "id": "orionidas-2026",
-    "tipo": "",
-    "icono": "",
-    "titulo": "Lluvia de meteoros de las Oriónidas",
-    "fecha": "21 - 22 de octubre de 2026",
-    "horario": "Horas antes del amanecer",
+    "id": "leonidas-2026",
+    "tipo": "lluvia_meteoros",
+    "icono": "☄️",
+    "titulo": "Lluvia de meteoros de las Leónidas",
+    "fecha": "17 - 18 de noviembre de 2026",
+    "horario": "Después de la medianoche y antes del amanecer",
     "importancia": 5,
-    "descripcion": "Famosa lluvia de estrellas producida por los restos del célebre cometa Halley, con meteoros muy rápidos y estelas brillantes.",
-    "visibilidad": "Mejor en las horas previas al amanecer, tras la puesta de la Luna, desde cielos oscuros y despejados.",
-    "recomendacion": "Busca un lugar alejado de la contaminación lumínica y abrígate bien; no se requieren telescopios, solo una vista amplia del cielo.",
-    "imagen": "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=900&q=80",
+    "descripcion": "Una de las lluvias de meteoros más conocidas del año, originada por los restos del cometa 55P/Tempel-Tuttle. Sus meteoros destacan por su gran velocidad y, ocasionalmente, producen brillantes destellos luminosos.",
+    "visibilidad": "Visible desde ambos hemisferios. Su máximo se espera durante la madrugada del 18 de noviembre, con una tasa aproximada de hasta 15 meteoros por hora bajo condiciones ideales.",
+    "recomendacion": "Busca un lugar alejado de las luces de la ciudad, permite que tus ojos se adapten a la oscuridad durante unos 30 minutos y observa una zona amplia del cielo. No necesitas telescopio.",
+    "imagen": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?auto=format&fit=crop&w=900&q=80",
     "mapLocation": {
       "longitude": -66.15,
       "latitude": -17.4,
@@ -30,42 +30,44 @@ export const eventosAstronomicos = {
     }
   },
   {
-    "id": "conjunction-saturn-moon-2026",
-    "tipo": "",
-    "icono": "",
-    "titulo": "Conjunción de la Luna y Saturno",
-    "fecha": "24 - 25 de octubre de 2026",
-    "horario": "Al anochecer",
-    "importancia": 4,
-    "descripcion": "La Luna realizará una aproximación cercana (conjunción) junto al planeta Saturno, que se encuentra brillando con intensidad en su mejor época del año.",
-    "visibilidad": "Visible a simple vista en todo el cielo nocturno con un horizonte despejado.",
-    "recomendacion": "A simple vista disfrutarás de la cercanía visual, pero si utilizas un telescopio podrás apreciar de forma espectacular los anillos de Saturno.",
-    "imagen": "https://images.unsplash.com/photo-1532693322450-2cb5c511067d?auto=format&fit=crop&w=900&q=80",
+    "id": "mars-jupiter-conjunction-2026",
+    "tipo": "conjuncion",
+    "icono": "🪐",
+    "titulo": "Conjunción de Marte y Júpiter",
+    "fecha": "15 - 16 de noviembre de 2026",
+    "horario": "Horas antes del amanecer",
+    "importancia": 5,
+    "descripcion": "Marte y Júpiter protagonizarán un espectacular acercamiento aparente en el cielo, llegando a encontrarse a aproximadamente 1,2 grados de separación. Júpiter destacará por su intenso brillo, mientras que Marte mostrará su característico tono rojizo.",
+    "visibilidad": "Observable a simple vista desde Bolivia y gran parte del mundo, mirando hacia el sector oriental del cielo antes de la salida del Sol.",
+    "recomendacion": "Busca un lugar con el horizonte despejado hacia el este y observa durante las horas previas al amanecer. Puedes utilizar binoculares para distinguir mejor ambos planetas.",
+    "imagen": "https://images.unsplash.com/photo-1614728263952-84ea256f9679?auto=format&fit=crop&w=900&q=80",
     "mapLocation": {
-      "longitude": -70.0,
-      "latitude": -15.0,
-      "zoom": 4
+      "longitude": -66.15,
+      "latitude": -17.4,
+      "zoom": 5
     }
   },
   {
-    "id": "hunters-moon-2026",
-    "tipo": "",
-    "icono": "",
-    "titulo": "Luna Llena del Cazador",
-    "fecha": "26 de octubre de 2026",
-    "horario": "Durante la salida de la Luna (atardecer)",
+    "id": "supermoon-november-2026",
+    "tipo": "luna_llena",
+    "icono": "🌕",
+    "titulo": "Superluna del Castor",
+    "fecha": "24 de noviembre de 2026",
+    "horario": "Durante la salida de la Luna y toda la noche",
     "importancia": 5,
-    "descripcion": "La tradicional Luna Llena de octubre, conocida como la Luna del Cazador, se aprecia con un tamaño visual imponente y un brillo de tono anaranjado al atardecer.",
-    "visibilidad": "Visible desde todo el planeta al asomarse por el horizonte oriental.",
-    "recomendacion": "Es un espectáculo ideal para la fotografía de paisajes nocturnos justo en el momento en el que el satélite comienza a elevarse por el este.",
+    "descripcion": "La Luna llena de noviembre, conocida tradicionalmente como Luna del Castor, coincidirá con una posición cercana al perigeo, haciendo que se observe ligeramente más grande y brillante que una Luna llena promedio. Será la primera de tres superlunas consecutivas.",
+    "visibilidad": "Visible desde Bolivia y prácticamente todo el planeta, siempre que las condiciones meteorológicas permitan observar el cielo. El mejor momento para apreciarla será durante su salida por el horizonte oriental.",
+    "recomendacion": "Busca un lugar con buena vista hacia el horizonte este y aprovecha el momento de la salida lunar para tomar fotografías. Puedes utilizar edificios, montañas o árboles como elementos de referencia para tus fotografías.",
     "imagen": "https://images.unsplash.com/photo-1532693322450-2cb5c511067d?auto=format&fit=crop&w=900&q=80",
     "mapLocation": {
-      "longitude": -63.0,
-      "latitude": -16.0,
-      "zoom": 4
+      "longitude": -66.15,
+      "latitude": -17.4,
+      "zoom": 5
     }
   }
 ],
+
+  11: [], // Diciembre
 
 8: [
   {
@@ -136,7 +138,5 @@ export const eventosAstronomicos = {
       zoom: 5,
     },
   },
-],
-  10: [], // Noviembre
-  11: [], // Diciembre
+], // Diciembre
 };
