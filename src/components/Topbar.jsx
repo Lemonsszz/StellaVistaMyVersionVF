@@ -8,11 +8,11 @@ export const Topbar = ({ coordinates }) => {
     <header className="relative z-30 w-full h-12 flex items-center px-4 gap-4 border-b border-white/[0.04] bg-cosmos-950/60 backdrop-blur-xl font-sans shrink-0">
 
       {/* Logo */}
-      <div className="flex items-center min-w-[190px]">
+      <div className="flex items-center min-w-[210px]">
         <img
-          src="/logo-stellavista.png"
-          alt="StellaVista"
-          className="h-9 w-auto max-w-[180px] object-contain"
+          src="/logo-artemis.png"
+          alt="Artemis"
+          className="h-10 w-[190px] object-contain object-left"
           onError={(event) => {
             event.currentTarget.style.display = 'none';
           }}

@@ -4,7 +4,8 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { getAllBortleZonesGeoJSON } from '../data/boliviaBortleZones';
 import { SITIOS_RECOMENDADOS_GEOJSON } from '../data/sitiosRecomendados';
 import { useAstroStore } from '../store/useAstroStore';
-import { MapPin } from 'lucide-react';
+import * as Astronomy from 'astronomy-engine';
+import { PLANETAS } from '../data/catalogoAstronomico';
 
 const BORTLE_SOURCE_DATA = getAllBortleZonesGeoJSON();
 
@@ -104,9 +105,27 @@ export const MapaInteractivo = ({
   onClic,
   mapRef,
   eventoSeleccionado,
+  mostrarInfoPunto,
 }) => {
   const { coordinates, layers } = useAstroStore();
   const mapKey = 'ECRGZxLvLb4HTx76OnDg';
+  const ahora = new Date();
+  const observer = new Astronomy.Observer(coordinates.lat, coordinates.lng, 0);
+  const planetasVisibles = PLANETAS.flatMap(({ key, label }) => {
+    try {
+      const equatorial = Astronomy.Equator(key, ahora, observer, true, true);
+      const horizontal = Astronomy.Horizon(
+        ahora,
+        observer,
+        equatorial.ra,
+        equatorial.dec,
+        'normal'
+      );
+      return horizontal.altitude >= 5 ? [label] : [];
+    } catch {
+      return [];
+    }
+  });
 
   return (
     <div className="relative w-full h-full">
@@ -146,6 +165,22 @@ export const MapaInteractivo = ({
 
       <Marker longitude={coordinates.lng} latitude={coordinates.lat} anchor="bottom">
         <div className="flex flex-col items-center">
+          {mostrarInfoPunto && (
+            <div
+              key={`${coordinates.lat}:${coordinates.lng}`}
+              className="pointer-events-none mb-2 max-w-[260px] animate-data-refresh rounded-xl border border-purple-300/25 bg-cosmos-950/95 px-3 py-2 text-center font-sans shadow-[0_8px_24px_rgba(0,0,0,0.55)] backdrop-blur-md"
+            >
+              <p className="text-[9px] font-mono tracking-[0.08em] text-ink-300">
+                LAT {coordinates.lat.toFixed(4)} · LNG {coordinates.lng.toFixed(4)}
+              </p>
+              <p className="mt-1 text-[10px] text-purple-100">
+                Visibles:{' '}
+                {planetasVisibles.length > 0
+                  ? planetasVisibles.join(', ')
+                  : 'ningún planeta'}
+              </p>
+            </div>
+          )}
           <div className="relative flex items-center justify-center">
             <span className="absolute w-7 h-7 rounded-full bg-purple-500/20 animate-ping" />
             <div className="w-3.5 h-3.5 rounded-full bg-white border-2 border-purple-400 shadow-[0_0_16px_rgba(192,132,252,0.9)]" />
@@ -161,7 +196,8 @@ export const MapaInteractivo = ({
         >
           <div className="flex flex-col items-center">
             <div className="px-3 py-2 rounded-xl bg-cosmos-900/90 backdrop-blur-md border border-purple-400/30 shadow-[0_10px_30px_rgba(0,0,0,0.6)] text-ink-100 text-xs whitespace-nowrap font-sans">
-              {eventoSeleccionado.icono} {eventoSeleccionado.titulo}
+              {eventoSeleccionado.icono && `${eventoSeleccionado.icono} `}
+              {eventoSeleccionado.titulo}
             </div>
 
             <div className="w-3 h-3 rounded-full bg-purple-300 border-2 border-white shadow-[0_0_14px_rgba(192,132,252,0.9)] mt-1" />

@@ -3,6 +3,7 @@ import { ChevronDown, ChevronUp, CalendarDays, Clock, MapPin } from "lucide-reac
 import { eventosAstronomicos } from "../data/eventosAstronomicos";
 import { Sparkles } from "lucide-react";
 import { Gauge } from "lucide-react";
+import { AnimatedPresence } from "./AnimatedPresence";
 
 const nombresMeses = [
   "Enero",
@@ -68,16 +69,12 @@ export default function EventosAstronomicos({ onVerEnMapa }) {
       </button>
 
       {/* CONTENIDO */}
-      <div
+      <AnimatedPresence
         id="eventos-astronomicos-panel"
-        aria-hidden={!abierto}
-        inert={!abierto}
-        className="min-h-0 overflow-hidden pointer-events-auto transition-[flex-grow,opacity,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
-        style={{
-          flex: abierto ? "1 1 0%" : "0 0 0%",
-          opacity: abierto ? 1 : 0,
-          transform: abierto ? "translateY(0)" : "translateY(-8px)",
-        }}
+        show={abierto}
+        mode="expand"
+        className="min-h-0 pointer-events-auto"
+        duration={480}
       >
         <div className="flex h-full min-h-0 flex-col pt-2">
           <div
@@ -246,7 +243,7 @@ export default function EventosAstronomicos({ onVerEnMapa }) {
           )}
           </div>
         </div>
-      </div>
+      </AnimatedPresence>
     </div>
   );
 }

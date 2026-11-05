@@ -27,7 +27,7 @@ export const ForecastBar = ({ forecast, dataActual }) => {
   if (!forecast?.length) return null;
 
   return (
-    <footer className="shrink-0 px-4 pb-4 pt-2 font-sans">
+    <footer className="animate-data-refresh shrink-0 px-4 pb-4 pt-2 font-sans">
       <div className="glass-card rounded-2xl p-3 shadow-glow-dock flex items-center gap-4">
         {/* Etiqueta del dock */}
         <div className="flex items-center gap-3 pl-1 shrink-0">

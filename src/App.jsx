@@ -17,12 +17,14 @@ import { AstronomoIA } from './components/AstronomoIA';
 import { NotebookPen, Bot, ChevronUp, X, BookmarkCheck } from 'lucide-react';
 import { BitacoraPanel } from './components/BitacoraPanel';
 import { ObservacionesGuardadasPanel } from './components/ObservacionesGuardadasPanel';
+import { AnimatedPresence } from './components/AnimatedPresence';
 
 const INTRO_SESSION_KEY = 'stellavista:intro-complete';
 
 function App() {
   const { coordinates, setCoordinates, isRedMode } = useAstroStore();
   const { data, isLoading, isError, refetch } = useCondicionesNocturnas();
+  const locationKey = `${coordinates.lat}:${coordinates.lng}`;
   const [introVisible, setIntroVisible] = useState(() => {
     return sessionStorage.getItem(INTRO_SESSION_KEY) !== 'true';
   });
@@ -32,7 +34,10 @@ function App() {
     () => sessionStorage.getItem(INTRO_SESSION_KEY) === 'true'
   );
   const mapRef = useRef(null);
+  const leftPanelRef = useRef(null);
+  const previousPanelLocation = useRef(locationKey);
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
+  const [mostrarInfoPunto, setMostrarInfoPunto] = useState(false);
   
   // Estado para controlar cuál panel flotante está activo: 'ninguno' | 'bitacora' | 'guardados' | 'ia'
   const [panelActivo, setPanelActivo] = useState('ninguno');
@@ -45,9 +50,33 @@ function App() {
     document.documentElement.classList.toggle('astro-red', isRedMode);
   }, [isRedMode]);
 
+  useEffect(() => {
+    if (previousPanelLocation.current === locationKey) return undefined;
+    previousPanelLocation.current = locationKey;
+
+    const panel = leftPanelRef.current;
+    if (!panel || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return undefined;
+    }
+
+    const animation = panel.animate(
+      [
+        { opacity: 0.76, transform: 'translateY(5px)', filter: 'blur(2px)' },
+        { opacity: 1, transform: 'translateY(0)', filter: 'blur(0)' },
+      ],
+      {
+        duration: 420,
+        easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+      }
+    );
+
+    return () => animation.cancel();
+  }, [locationKey]);
+
 const manejaClic = (evento) => {
     const { lng, lat } = evento.lngLat;
     setCoordinates({ lat, lng });
+    setMostrarInfoPunto(true);
     setEventoSeleccionado(null); // <--- Limpia el indicador/marcador anterior al hacer clic en el mapa
   };
 
@@ -59,7 +88,6 @@ const manejaClic = (evento) => {
     setCoordinates({ lat: zona.lat, lng: zona.lng });
     setEventoSeleccionado({
       titulo: `${planetaLabel} · ${zona.nombre}`,
-      icono: '🪐',
       mapLocation: {
         latitude: zona.lat,
         longitude: zona.lng,
@@ -104,7 +132,10 @@ const manejaClic = (evento) => {
       <div className="flex flex-1 min-h-0 overflow-hidden">
 
         {/* COLUMNA IZQUIERDA */}
-        <aside className="w-64 bg-transparent border-r border-white/[0.04] flex flex-col shrink-0 overflow-y-auto gap-3 p-3">
+        <aside
+          ref={leftPanelRef}
+          className="w-64 bg-transparent border-r border-white/[0.04] flex flex-col shrink-0 overflow-y-auto gap-3 p-3"
+        >
           <ScorePanel
             data={data}
             isLoading={isLoading}
@@ -112,7 +143,10 @@ const manejaClic = (evento) => {
             onRetry={refetch}
           />
           <LayerControl />
-          <CoordsPanel altitud={data?.altitud} bortleInfo={data?.bortleInfo} />
+          <CoordsPanel
+            altitud={data?.altitud}
+            bortleInfo={data?.bortleInfo}
+          />
         </aside>
 
         {/* MAPA CENTRAL */}
@@ -121,6 +155,7 @@ const manejaClic = (evento) => {
             onClic={manejaClic}
             mapRef={mapRef}
             eventoSeleccionado={eventoSeleccionado}
+            mostrarInfoPunto={mostrarInfoPunto}
           />
           {/* Velo sutil de integración sobre el mapa */}
           <div className="pointer-events-none absolute inset-0 z-10 ring-1 ring-inset ring-white/[0.06]" />
@@ -142,12 +177,16 @@ const manejaClic = (evento) => {
           />
 
           {/* CONTENEDOR INFERIOR IZQUIERDO */}
-          <div className="absolute bottom-6 left-6 z-50 flex flex-col items-start gap-2">
+          <div className="absolute bottom-6 left-6 z-50">
+            <div className="relative flex flex-col items-start gap-2">
             
             {/* 3. PANEL ACTIVO (Bitácora, Lugares Guardados o Astrónomo IA) */}
-            {panelActivo !== 'ninguno' && (
+            <AnimatedPresence
+              show={panelActivo !== 'ninguno'}
+              className="absolute bottom-full left-0 mb-2"
+            >
               <div 
-                className={`glass-card rounded-2xl shadow-2xl mb-2 flex flex-col relative overflow-hidden animate-card-rise ${
+                className={`glass-card rounded-2xl shadow-2xl flex flex-col relative overflow-hidden ${
                   panelActivo === 'ia' 
                     ? 'w-[340px] h-[400px] max-w-[calc(100vw-3rem)]'  
                     : 'w-[380px] h-[460px] max-w-[calc(100vw-3rem)]'   
@@ -202,11 +241,14 @@ const manejaClic = (evento) => {
                   )}
                 </div>
               </div>
-            )}
+            </AnimatedPresence>
 
             {/* 2. MENÚ DESPLEGABLE (Opciones de herramientas) */}
-            {menuDesplegableAbierto && panelActivo === 'ninguno' && (
-              <div className="glass-card w-64 rounded-2xl p-2 shadow-2xl flex flex-col gap-1 mb-2 animate-card-rise">
+            <AnimatedPresence
+              show={menuDesplegableAbierto && panelActivo === 'ninguno'}
+              className="absolute bottom-full left-0 mb-2"
+            >
+              <div className="glass-card w-64 rounded-2xl p-2 shadow-2xl flex flex-col gap-1">
                 <button
                   onClick={() => {
                     setPanelActivo('bitacora');
@@ -240,7 +282,7 @@ const manejaClic = (evento) => {
                   Astrónomo IA
                 </button>
               </div>
-            )}
+            </AnimatedPresence>
 
             {/* 1. BARRA DE CONTROL INFERIOR */}
             <div className="flex items-center gap-2">
@@ -299,12 +341,14 @@ const manejaClic = (evento) => {
               )}
             </div>
 
+            </div>
           </div>
 
         </main>
 
         {/* COLUMNA DERECHA */}
         <AstroPanel
+          updateKey={`${coordinates.lat}:${coordinates.lng}`}
           faseLunar={data?.faseLunar ?? 0}
           lunaFase={data?.lunaFase   ?? 0}
           onIrAZona={irAZonaObservacion}
@@ -313,7 +357,11 @@ const manejaClic = (evento) => {
       </div>
 
       {/* FILA 3 — Pronóstico */}
-      <ForecastBar forecast={data?.forecast} dataActual={data} />
+      <ForecastBar
+      key={locationKey}
+        forecast={data?.forecast}
+        dataActual={data}
+      />
         </div>
       )}
 

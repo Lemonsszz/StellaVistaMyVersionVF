@@ -10,6 +10,7 @@ import { PLANETAS_INFO } from '../data/planetasInfo';
 import { getVisibilidad } from '../utils/visibilidad';
 import BubbleMenu from './BubbleMenu';
 import { PlanetaDetalle } from './PlanetaDetalle';
+import { AnimatedPresence } from './AnimatedPresence';
 
 // Canvas de la luna
 const LunaCanvas = ({ fraccion, fase }) => {
@@ -70,7 +71,7 @@ const LunaCanvas = ({ fraccion, fase }) => {
   );
 };
 
-export const AstroPanel = ({ faseLunar, lunaFase, onIrAZona }) => {
+export const AstroPanel = ({ faseLunar, lunaFase, onIrAZona, updateKey }) => {
   const { coordinates } = useAstroStore();
   const ahora    = new Date();
   const observer = new Astronomy.Observer(coordinates.lat, coordinates.lng, 0);
@@ -147,10 +148,10 @@ export const AstroPanel = ({ faseLunar, lunaFase, onIrAZona }) => {
   });
 
   return (
-    <aside className="w-56 bg-transparent border-l border-white/[0.04] flex flex-col shrink-0 overflow-y-auto gap-3 p-3 font-sans">
+    <aside className="w-60 min-h-0 bg-transparent border-l border-white/[0.04] flex flex-col shrink-0 overflow-y-auto gap-3 p-3 font-sans">
 
       {/* Luna */}
-      <section className="glass-card glass-card-hover animate-card-rise rounded-2xl p-4">
+      <section key={`moon-${updateKey}`} className="glass-card glass-card-hover animate-data-refresh shrink-0 rounded-2xl p-4">
         <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-ink-400 mb-3">
           Fase lunar
         </p>
@@ -170,7 +171,7 @@ export const AstroPanel = ({ faseLunar, lunaFase, onIrAZona }) => {
       </section>
 
       {/* Planetas — disparador del menu de burbujas */}
-      <section className="glass-card animate-card-rise overflow-hidden rounded-2xl">
+      <section key={`planets-${updateKey}`} className="glass-card animate-data-refresh shrink-0 overflow-hidden rounded-2xl">
         <button
           type="button"
           onClick={() => setPlanetasAbiertos((abierto) => !abierto)}
@@ -234,21 +235,26 @@ export const AstroPanel = ({ faseLunar, lunaFase, onIrAZona }) => {
         subtitle="Etiquetas del cielo de ahora mismo. Elige un planeta para ver su ficha, sus datos y la mejor zona de observación."
       />
 
-      {planetaActivo && (
+      <AnimatedPresence
+        show={Boolean(planetaActivo)}
+        className="fixed inset-0 z-[260]"
+      >
+        {planetaActivo && (
         <PlanetaDetalle
           key={planetaActivo.key}
           planeta={planetaActivo}
           onCerrar={() => setPlanetaSeleccionado(null)}
           onIrAZona={onIrAZona}
         />
-      )}
+        )}
+      </AnimatedPresence>
 
       {/* Espacio profundo */}
-      <section className="glass-card glass-card-hover animate-card-rise rounded-2xl p-4">
+      <section key={`deep-sky-${updateKey}`} className="glass-card glass-card-hover animate-data-refresh shrink-0 rounded-2xl p-4">
         <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-ink-400 mb-2">
           Espacio profundo
         </p>
-        <div className="space-y-1.5">
+        <div className="space-y-2">
           {objetosProfundos.map(({ nombre, altitud }) => {
             const { label: visLabel, clase } = getVisibilidad(altitud);
             return (
@@ -266,12 +272,12 @@ export const AstroPanel = ({ faseLunar, lunaFase, onIrAZona }) => {
         </div>
       </section>
 
-      <div className="mt-auto flex flex-col gap-2">
+      <div className="flex shrink-0 flex-col gap-2">
         <button
           onClick={() => setPlanetarioAbierto(true)}
           className="w-full py-2.5 rounded-xl bg-white/[0.02] border border-white/[0.08] text-[10px] font-mono tracking-[0.16em] uppercase text-ethereal-lavender hover:bg-white/[0.06] hover:border-purple-400/30 hover:-translate-y-0.5 transition-all duration-300"
         >
-          Abrir planetario
+          Observar el cielo
         </button>
         <button
           onClick={() => setSistemaSolarAbierto(true)}
@@ -281,12 +287,20 @@ export const AstroPanel = ({ faseLunar, lunaFase, onIrAZona }) => {
         </button>
       </div>
 
-      {planetarioAbierto && (
+      <AnimatedPresence
+        show={planetarioAbierto}
+        className="fixed inset-0 z-50"
+        duration={420}
+      >
         <Planetario onCerrar={() => setPlanetarioAbierto(false)} />
-      )}
-      {sistemaSolarAbierto && (
+      </AnimatedPresence>
+      <AnimatedPresence
+        show={sistemaSolarAbierto}
+        className="fixed inset-0 z-50"
+        duration={420}
+      >
         <SolarSystemWindow onCerrar={() => setSistemaSolarAbierto(false)} />
-      )}
+      </AnimatedPresence>
     </aside>
   );
 };

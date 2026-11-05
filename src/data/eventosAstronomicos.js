@@ -13,8 +13,8 @@ export const eventosAstronomicos = {
   10: [
   {
     "id": "leonidas-2026",
-    "tipo": "lluvia_meteoros",
-    "icono": "☄️",
+    "tipo": "",
+    "icono": "",
     "titulo": "Lluvia de meteoros de las Leónidas",
     "fecha": "17 - 18 de noviembre de 2026",
     "horario": "Después de la medianoche y antes del amanecer",
@@ -22,7 +22,7 @@ export const eventosAstronomicos = {
     "descripcion": "Una de las lluvias de meteoros más conocidas del año, originada por los restos del cometa 55P/Tempel-Tuttle. Sus meteoros destacan por su gran velocidad y, ocasionalmente, producen brillantes destellos luminosos.",
     "visibilidad": "Visible desde ambos hemisferios. Su máximo se espera durante la madrugada del 18 de noviembre, con una tasa aproximada de hasta 15 meteoros por hora bajo condiciones ideales.",
     "recomendacion": "Busca un lugar alejado de las luces de la ciudad, permite que tus ojos se adapten a la oscuridad durante unos 30 minutos y observa una zona amplia del cielo. No necesitas telescopio.",
-    "imagen": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?auto=format&fit=crop&w=900&q=80",
+    "imagen": "https://content-viajes.nationalgeographic.com.es/medio/2025/11/13/lluvia-de-estrellas_88113608_399578690_251113113952_1280x852.webp",
     "mapLocation": {
       "longitude": -66.15,
       "latitude": -17.4,
@@ -31,8 +31,8 @@ export const eventosAstronomicos = {
   },
   {
     "id": "mars-jupiter-conjunction-2026",
-    "tipo": "conjuncion",
-    "icono": "🪐",
+    "tipo": "",
+    "icono": "",
     "titulo": "Conjunción de Marte y Júpiter",
     "fecha": "15 - 16 de noviembre de 2026",
     "horario": "Horas antes del amanecer",
@@ -40,7 +40,7 @@ export const eventosAstronomicos = {
     "descripcion": "Marte y Júpiter protagonizarán un espectacular acercamiento aparente en el cielo, llegando a encontrarse a aproximadamente 1,2 grados de separación. Júpiter destacará por su intenso brillo, mientras que Marte mostrará su característico tono rojizo.",
     "visibilidad": "Observable a simple vista desde Bolivia y gran parte del mundo, mirando hacia el sector oriental del cielo antes de la salida del Sol.",
     "recomendacion": "Busca un lugar con el horizonte despejado hacia el este y observa durante las horas previas al amanecer. Puedes utilizar binoculares para distinguir mejor ambos planetas.",
-    "imagen": "https://images.unsplash.com/photo-1614728263952-84ea256f9679?auto=format&fit=crop&w=900&q=80",
+    "imagen": "https://www.lanacion.com.ar/resizer/v2/marte-y-jupiter-tendran-una-conjuncion-este-3MRJLGV3JNGKNKPR3EWAEW4NFQ.png?auth=6d5365b3f9f7b21246a57a669317521627a265de2c4789fb3a03738780429d1f&width=1200&height=800&quality=70&smart=true",
     "mapLocation": {
       "longitude": -66.15,
       "latitude": -17.4,
@@ -49,8 +49,8 @@ export const eventosAstronomicos = {
   },
   {
     "id": "supermoon-november-2026",
-    "tipo": "luna_llena",
-    "icono": "🌕",
+    "tipo": "",
+    "icono": "",
     "titulo": "Superluna del Castor",
     "fecha": "24 de noviembre de 2026",
     "horario": "Durante la salida de la Luna y toda la noche",
@@ -58,7 +58,7 @@ export const eventosAstronomicos = {
     "descripcion": "La Luna llena de noviembre, conocida tradicionalmente como Luna del Castor, coincidirá con una posición cercana al perigeo, haciendo que se observe ligeramente más grande y brillante que una Luna llena promedio. Será la primera de tres superlunas consecutivas.",
     "visibilidad": "Visible desde Bolivia y prácticamente todo el planeta, siempre que las condiciones meteorológicas permitan observar el cielo. El mejor momento para apreciarla será durante su salida por el horizonte oriental.",
     "recomendacion": "Busca un lugar con buena vista hacia el horizonte este y aprovecha el momento de la salida lunar para tomar fotografías. Puedes utilizar edificios, montañas o árboles como elementos de referencia para tus fotografías.",
-    "imagen": "https://images.unsplash.com/photo-1532693322450-2cb5c511067d?auto=format&fit=crop&w=900&q=80",
+    "imagen": "https://fotografias.lasexta.com/clipping/cmsimages02/2024/03/08/25936C23-D6BE-4D37-A2E6-FEF40F07F246/luna-llena_70.jpg?crop=2048,1152,x0,y191&width=480&height=270&optimize=high&format=webply",
     "mapLocation": {
       "longitude": -66.15,
       "latitude": -17.4,

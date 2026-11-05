@@ -110,7 +110,7 @@ export const PlanetaDetalle = ({ planeta, onCerrar, onIrAZona }) => {
                   <span className="planeta-anillo planeta-anillo--atras" aria-hidden="true" />
                   <span className="planeta-anillo planeta-anillo--frente" aria-hidden="true" />
                 </>
-              )}
+              )}  
             </div>
 
             <div className="min-w-0">

@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<title>StellaVista · Navegador estelar</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0716;--p:rgba(30,21,60,.55);--b:rgba(150,120,255,.18);--t:#efeaff;--m:#8d82b5;--a:#a855f7;--a2:#e879f9;--l:#c4b5fd;--f:rgba(150,120,255,.07);color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#ece8f7;--p:rgba(255,255,255,.72);--b:rgba(110,80,200,.24);--t:#241a4a;--m:#6b6196;--l:#6d3fd1;--f:rgba(110,80,200,.07);color-scheme:light}}
+*{box-sizing:border-box}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{height:100%;margin:0;color:var(--t);font:400 13px 'Space Grotesk',system-ui,sans-serif;overflow:hidden;background:radial-gradient(900px 500px at 85% -10%,rgba(168,85,247,.22),transparent 60%),radial-gradient(700px 500px at 0% 100%,rgba(99,76,220,.18),transparent 60%),var(--bg)}
+#app{height:100%;min-width:1100px;display:grid;grid-template-columns:280px 1fr 300px;grid-template-rows:52px minmax(0,1fr) 82px;gap:14px;padding:12px 14px}
+.lb{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--m);font-weight:600}
+.card{background:var(--p);border:1px solid var(--b);border-radius:20px;padding:16px 18px;backdrop-filter:blur(14px);min-height:0}
+.col{display:flex;flex-direction:column;gap:14px;min-height:0}
+.grow{flex:1;display:flex;flex-direction:column;overflow:hidden}
+header{grid-column:1/4;display:flex;align-items:center;gap:18px}
+.logo{display:flex;align-items:center;margin-right:auto}.logo img{height:28px;width:auto;display:block}
+.close{cursor:pointer;width:34px;height:34px;border-radius:50%;border:1px solid var(--b);background:var(--f);font-size:18px;line-height:1}
+.coord{display:flex;align-items:center;gap:8px}
+input,select,button{font:inherit;color:var(--t)}
+input,select{background:var(--f);border:1px solid var(--b);border-radius:10px;padding:7px 10px;outline:none}
+input:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid var(--a2);outline-offset:2px}
+.coord input{width:88px}
+.pill{font-size:9px;letter-spacing:.14em;font-weight:700;padding:5px 10px;border-radius:99px;border:1px solid var(--b);color:var(--l);background:rgba(168,85,247,.12);white-space:nowrap;text-transform:uppercase}
+.pill.ok{color:#fff;background:rgba(168,85,247,.5)}.pill.no{color:var(--m);background:transparent}
+.hp{padding:8px 14px;font-size:10px}
+.big{font-size:54px;font-weight:200;line-height:1;margin-top:10px}.big span{font-size:16px;color:var(--m);margin-left:6px}
+.bar{height:5px;border-radius:9px;background:var(--f);margin:14px 0}.bar i{display:block;height:100%;width:0;border-radius:9px;background:linear-gradient(90deg,#7c6cf0,var(--a2));transition:width .5s}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mini{border:1px solid var(--b);border-radius:12px;padding:9px 11px;background:var(--f)}.mini b{display:block;font-size:17px;font-weight:600;margin-top:4px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.chip{cursor:pointer;background:var(--f);border:1px solid var(--b);border-radius:99px;padding:5px 11px;font-size:11px;font-weight:600;color:var(--m)}
+.chip.on{color:#fff;background:rgba(168,85,247,.45);border-color:rgba(232,121,249,.5)}
+#q{width:100%}
+#list{overflow:auto;flex:1;margin:0 -8px;padding:0 8px;scrollbar-width:thin}
+.it{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 10px;border-radius:12px;cursor:pointer;border:1px solid transparent}
+.it:hover,.it.on{background:rgba(168,85,247,.14);border-color:var(--b)}.it b{font-weight:600}.it small{display:block;color:var(--m);font-size:10.5px;margin-top:2px}
+#stage{position:relative;border-radius:20px;overflow:hidden;border:1px solid var(--b);background:#05030c}
+#sky{width:100%;height:100%;display:block;cursor:grab}#sky.dr{cursor:grabbing}
+.float{position:absolute;background:rgba(14,9,32,.72);border:1px solid rgba(150,120,255,.22);backdrop-filter:blur(12px);border-radius:18px;color:#efeaff}
+#cmpc{top:14px;right:14px;padding:10px 12px;display:flex;align-items:center;gap:12px}#cmpc b{font-size:20px;font-weight:200;display:block}
+#tools{left:14px;bottom:14px;padding:8px;display:flex;gap:6px;align-items:center}#tools .lb{padding:0 8px}
+#hint{right:14px;bottom:14px;padding:8px 14px;font-size:11px;color:#a69bd0}
+#tip{position:absolute;pointer-events:none;padding:6px 10px;border-radius:10px;background:rgba(14,9,32,.9);border:1px solid rgba(150,120,255,.3);color:#efeaff;font-size:11px;display:none;white-space:nowrap}
+#dName{font-size:26px;font-weight:600;letter-spacing:-.02em;margin:10px 0 2px}
+.row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--b)}.row span:first-child{color:var(--m)}.row:last-of-type{border:0}
+#ch{width:100%;height:96px;display:block;margin:6px 0 10px}
+.btn{cursor:pointer;border:1px solid rgba(232,121,249,.45);background:rgba(168,85,247,.28);border-radius:14px;padding:11px;font-weight:700;font-size:10px;letter-spacing:.16em;text-transform:uppercase;width:100%;color:var(--t)}
+.btn:hover{background:rgba(168,85,247,.45)}
+#time{grid-column:1/4;display:flex;align-items:center;gap:20px;padding:12px 20px}
+#tl{flex:1;min-width:0}
+#rg{width:100%;accent-color:#c04df0;margin:4px 0 0}
+.tk{display:flex;justify-content:space-between;font-size:10px;color:var(--m);letter-spacing:.1em}
+.ib{cursor:pointer;width:40px;height:40px;border-radius:50%;border:1px solid rgba(232,121,249,.5);background:rgba(168,85,247,.3);font-size:14px}
+.sm{padding:8px 14px;border-radius:99px;cursor:pointer;background:var(--f);border:1px solid var(--b);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+#clock{font-size:26px;font-weight:200;min-width:76px;text-align:center}
+</style></head><body>
+<div id="app">
+<header>
+ <div class="logo"><img src="/logo-artemis.png" alt="Artemis"></div>
+ <div class="coord"><span class="lb">Lat</span><input id="lat" type="number" step=".01" value="-17.8633"><span class="lb">Lng</span><input id="lon" type="number" step=".01" value="-66.3136">
+ <select id="city"><option value="-17.8633,-66.3136">Punto de la captura</option><option value="-16.5,-68.15">La Paz</option><option value="-17.78,-63.18">Santa Cruz</option><option value="-19.03,-65.26">Sucre</option><option value="-20.46,-66.82">Salar de Uyuni</option><option value="-21.53,-64.73">Tarija</option><option value="40.42,-3.70">Madrid (hemisferio norte)</option></select></div>
+ <span class="pill hp">● Modo nocturno</span><span class="pill hp" id="utc">● Hora local</span><button class="close" id="close" aria-label="Cerrar planetario">×</button>
+</header>
+
+<aside class="col">
+ <section class="card"><div class="lb">Cielo ahora</div><div class="big"><b id="nv" style="font-weight:200">0</b><span>/ <i id="nt" style="font-style:normal"></i> objetos</span></div>
+ <div class="bar"><i id="bv"></i></div><div id="bt" style="margin-bottom:12px;color:var(--m)"></div>
+ <div class="g2"><div class="mini"><span class="lb">Tiempo sidéreo</span><b id="lst"></b></div><div class="mini"><span class="lb">Vía Láctea</span><b id="mwa"></b></div></div></section>
+ <section class="card grow"><div class="lb">Explorar</div><div class="chips" id="tabs"><button class="chip on" data-t="all">Todo</button><button class="chip" data-t="c">Constelaciones</button><button class="chip" data-t="d">Espacio profundo</button><button class="chip" data-t="s">Estrellas</button></div>
+ <input id="q" placeholder="Buscar objeto…" aria-label="Buscar objeto"><div id="list" style="margin-top:10px"></div></section>
+</aside>
+
+<main id="stage"><canvas id="sky"></canvas><div id="tip"></div>
+ <div class="float" id="cmpc"><canvas id="cmp" width="168" height="168" style="width:84px;height:84px"></canvas><div><span class="lb">Rumbo</span><b id="cb">S 180°</b><span id="ca" style="color:#a69bd0;font-size:11px"></span></div></div>
+ <div class="float" id="tools"><span class="lb">Capas</span><button class="chip on" data-k="lines">Constelaciones</button><button class="chip on" data-k="names">Nombres</button><button class="chip on" data-k="mw">Vía Láctea</button></div>
+ <div class="float" id="hint">Arrastra para girar · rueda para acercar</div>
+</main>
+
+<aside class="col"><section class="card grow" style="overflow:auto">
+ <div class="lb" id="dTipo"></div><div id="dName"></div><div id="dSub" style="color:var(--m);margin-bottom:12px"></div>
+ <div class="g2"><div class="mini"><span class="lb">Altura</span><b id="dAlt"></b></div><div class="mini"><span class="lb">Azimut</span><b id="dAz"></b></div><div class="mini"><span class="lb">Magnitud</span><b id="dMag"></b></div><div class="mini"><span class="lb">Distancia</span><b id="dDist" style="font-size:13px;margin-top:7px"></b></div></div>
+ <div style="margin:16px 0 0;display:flex;justify-content:space-between;align-items:center"><span class="lb">Altura en la noche</span><span class="pill" id="dState"></span></div>
+ <canvas id="ch"></canvas>
+ <div class="row"><span>Sale</span><b id="tR"></b></div><div class="row"><span>Culmina</span><b id="tC"></b></div><div class="row"><span>Se pone</span><b id="tS"></b></div><div class="row"><span>Mejor hora</span><b id="tB"></b></div>
+ <button class="btn" id="go" style="margin-top:14px">Centrar en el cielo</button></section></aside>
+
+<section class="card" id="time">
+ <span class="lb" style="white-space:nowrap">Línea de tiempo</span>
+ <button class="ib" id="pl" aria-label="Reproducir">▶</button><div id="clock">22:00</div>
+ <div id="tl"><input id="rg" type="range" min="0" max="720" value="240" aria-label="Hora de la noche"><div class="tk"><span>18h</span><span>20h</span><span>22h</span><span>00h</span><span>02h</span><span>04h</span><span>06h</span></div></div>
+ <input id="dt" type="date" aria-label="Fecha"><button class="sm" id="now">Ahora</button>
+</section>
+</div>
+<script>
+const $=s=>document.querySelector(s),D=Math.PI/180,pad=n=>String(n).padStart(2,'0');
+const raw=`sir,Sirio,6.752,-16.716,-1.46,8.6
+cnp,Canopus,6.399,-52.696,-0.74,310
+acn,Alfa Centauri,14.660,-60.835,-0.27,4.4
+arc,Arturo,14.261,19.182,-0.05,37
+veg,Vega,18.616,38.784,0.03,25
+cap,Capella,5.278,45.998,0.08,43
+rig,Rigel,5.242,-8.202,0.13,860
+pro,Proción,7.655,5.225,0.34,11.5
+ach,Achernar,1.629,-57.237,0.46,140
+btl,Betelgeuse,5.919,7.407,0.42,550
+had,Hadar,14.064,-60.373,0.61,390
+alt,Altair,19.846,8.868,0.76,17
+acr,Acrux,12.443,-63.099,0.76,320
+ald,Aldebarán,4.599,16.509,0.85,65
+ans,Antares,16.490,-26.432,1.06,550
+spi,Espiga,13.420,-11.161,0.98,250
+pol,Pólux,7.755,28.026,1.14,34
+fom,Fomalhaut,22.961,-29.622,1.16,25
+den,Deneb,20.690,45.280,1.25,2600
+mim,Mimosa,12.795,-59.689,1.25,280
+reg,Régulo,10.140,11.967,1.35,79
+adh,Adhara,6.977,-28.972,1.50,430
+cas,Cástor,7.577,31.888,1.58,51
+gac,Gacrux,12.519,-57.113,1.64,88
+sha,Shaula,17.560,-37.104,1.62,570
+bel,Bellatrix,5.419,6.350,1.64,250
+eln,Elnath,5.438,28.608,1.65,130
+mia,Miaplacidus,9.220,-69.717,1.67,113
+aln,Alnilam,5.603,-1.202,1.69,2000
+ank,Alnitak,5.679,-1.943,1.74,1260
+mrz,Mirzam,6.378,-17.956,1.98,500
+sai,Saiph,5.796,-9.670,2.06,650
+mnt,Mintaka,5.533,-0.299,2.23,1200
+wez,Wezen,7.140,-26.393,1.84,1600
+sga,Sargas,17.622,-42.998,1.87,270
+ime,Imai,12.252,-58.749,2.8,350
+dsc,Dschubba,16.006,-22.622,2.32,400
+grf,Graffias,16.090,-19.805,2.62,550
+sig,σ Escorpio,16.353,-25.593,2.9
+tau,τ Escorpio,16.598,-28.216,2.82
+eps,ε Escorpio,16.836,-34.293,2.29,65
+mu1,μ Escorpio,16.864,-38.047,3.0
+zsc,ζ Escorpio,16.909,-42.362,3.6
+esc,η Escorpio,17.203,-43.239,3.33
+ups,υ Escorpio,17.513,-37.295,2.7
+alu,Aludra,7.402,-29.303,2.45
+mei,Meissa,5.585,9.934,3.5
+zta,ζ Tauro,5.627,21.14,3.0
+gtu,γ Tauro,4.330,15.63,3.65
+dnb,Denébola,11.818,14.572,2.14,36
+alg,Algieba,10.333,19.842,2.01,130
+zos,Zosma,11.235,20.524,2.56
+cht,Chertan,11.237,15.43,3.3
+mkn,Menkent,14.111,-36.370,2.06,61
+ecn,ε Centauro,13.665,-53.466,2.3
+zcn,ζ Centauro,13.925,-47.288,2.55
+gcn,Muhlifain,12.692,-48.96,2.2
+avi,Avior,8.375,-59.509,1.86,630
+asp,Aspidiske,9.285,-59.275,2.25
+kau,Kaus Australis,18.403,-34.385,1.85,143
+nun,Nunki,18.921,-26.297,2.05,228
+asc,Ascella,19.043,-29.88,2.6
+kam,Kaus Media,18.350,-29.828,2.7
+kab,Kaus Borealis,18.466,-25.421,2.8
+als,Alnasl,18.097,-30.424,2.99
+tsg,τ Sagitario,19.116,-27.670,3.3
+dub,Dubhe,11.062,61.751,1.79,124
+mrk2,Merak,11.031,56.382,2.37,79
+phd,Phecda,11.897,53.695,2.44,84
+mgz,Megrez,12.257,57.033,3.31,81
+alo,Alioth,12.900,55.960,1.77,83
+miz,Mizar,13.399,54.925,2.04,83
+alk,Alkaid,13.792,49.313,1.86,104
+sch,Schedar,0.675,56.537,2.24,228
+cph,Caph,0.153,59.150,2.28,54
+gcs,γ Casiopea,0.945,60.717,2.47,550
+rch,Ruchbah,1.430,60.235,2.68,99
+sgn,Segin,1.907,63.670,3.38,410
+zly,ζ Lira,18.746,37.605,4.36,150
+dly,δ Lira,18.908,36.899,4.3,900
+shl,Sheliak,18.835,33.363,3.52,960
+sul,Sulafat,18.982,32.690,3.25,620
+sad,Sadr,20.370,40.257,2.23,1800
+gie,Gienah,20.770,33.970,2.48,72
+dcy,δ Cisne,19.749,45.131,2.87,165
+alb,Albireo,19.512,27.960,3.18,430
+tar,Tarazed,19.771,10.613,2.72,395
+als2,Alshain,19.922,6.407,3.71,45
+alh,Alhena,6.629,16.399,1.93,109
+mbs,Mebsuta,6.732,25.131,3.06,840
+tjt,Tejat,6.383,22.514,2.88,230
+wst,Wasat,7.335,21.982,3.53,60
+mkl,Menkalinan,5.992,44.947,1.90,82
+has,Hassaleh,4.950,33.166,2.69,490
+atr,Atria,16.811,-69.028,1.92,415
+btr,β Tri. Austral,15.919,-63.431,2.83,40
+gtr,γ Tri. Austral,15.315,-68.679,2.87,180
+pea,Peacock,20.427,-56.735,1.94,183
+aln2,Alnair,22.137,-46.961,1.74,101
+ank2,Ankaa,0.438,-42.306,2.40,77
+hmz,Hamal,2.120,23.462,2.0,66
+mfk,Mirfak,3.405,49.861,1.79,590
+alg2,Algol,3.136,40.956,2.1,90
+plr,Polaris,2.530,89.264,1.98,433
+alp,Alpheratz,0.140,29.091,2.06,97
+mir,Mirach,1.162,35.621,2.05,200
+alm,Almach,2.065,42.330,2.1,350
+rsh,Rasalhague,17.582,12.560,2.08,49
+enf,Enif,21.736,9.875,2.39,670
+mkb,Markab,23.079,15.205,2.49,133
+sht,Scheat,23.063,28.083,2.42,196
+agb,Algenib,0.220,15.184,2.83,390
+mnk,Menkar,3.038,4.090,2.53,220
+dph,Diphda,0.726,-17.987,2.04,96
+alr,Alphard,9.460,-8.659,1.98,177
+zbg,Zubenelgenubi,14.848,-16.042,2.75,77
+zbs,Zubeneschamali,15.283,-9.383,2.61,185
+elt,Eltanin,17.943,51.489,2.23,148
+suh,Suhail,9.133,-43.433,2.21,545
+mkr,Markeb,9.368,-55.011,2.5,540
+reg2,Regor,8.158,-47.345,1.75,1100
+nao,Naos,8.060,-40.003,2.25,1080`;
+const ST={},SL=[];
+raw.split('\n').forEach(l=>{const[k,name,ra,dec,mag,d]=l.split(',');const o={id:k,name,ra:+ra,dec:+dec,mag:+mag,dist:+d||0,type:'s',sub:'Estrella · mag '+(+mag).toFixed(1)};ST[k]=o;if(o.mag<=2.1)SL.push(o)});
+const CON=[['Cruz del Sur','acr-gac mim-ime'],['Orión','mei-btl-ank-aln-mnt-bel-mei ank-sai mnt-rig'],['Escorpio','grf-dsc-sig-ans-tau-eps-mu1-zsc-esc-sga-ups-sha'],['Can Mayor','mrz-sir-wez-adh wez-alu'],['Tauro','eln-ald-zta ald-gtu'],['Leo','reg-alg-zos-dnb-cht-reg cht-zos'],['Centauro','had-acn had-ecn-zcn-mkn ecn-gcn'],['Carina','cnp-avi-asp-mia-avi'],['Sagitario','als-kau-asc-tsg-nun-kab-kam-als kam-kau'],['Osa Mayor','dub-mrk2-phd-mgz-dub mgz-alo-miz-alk'],['Casiopea','cph-sch-gcs-rch-sgn'],['Lira','veg-zly-dly-sul-shl-zly'],['Cisne','den-sad-alb dcy-sad-gie'],['Águila','tar-alt-als2'],['Géminis','cas-mbs-tjt pol-wst-alh'],['Auriga','cap-mkl-eln-has-cap'],['Triángulo Austral','atr-btr-gtr-atr'],['Pegaso','mkb-sht-alp-agb-mkb mkb-enf'],['Andrómeda','alp-mir-alm']].map(([name,s])=>{const lines=[],ks=new Set();s.split(' ').forEach(ch=>{const a=ch.split('-');a.forEach(k=>ks.add(k));for(let i=0;i<a.length-1;i++)lines.push([ST[a[i]],ST[a[i+1]]])});const st=[...ks].map(k=>ST[k]),n=st.length;return{id:'c'+name,name,type:'c',sub:'Constelación · '+n+' estrellas',ra:(Math.atan2(st.reduce((a,b)=>a+Math.sin(b.ra*15*D),0),st.reduce((a,b)=>a+Math.cos(b.ra*15*D),0))/D/15+24)%24,dec:st.reduce((a,b)=>a+b.dec,0)/n,mag:null,dist:0,lines}});
+const DSO=`M 42|Nebulosa de Orión|5.588|-5.39|4.0|1344|Nebulosa
+M 45|Pléyades|3.79|24.12|1.6|444|Cúmulo abierto
+M 31|Galaxia de Andrómeda|0.712|41.27|3.4|2500000|Galaxia
+M 8|Nebulosa de la Laguna|18.063|-24.38|6.0|4100|Nebulosa
+M 22|Cúmulo M 22|18.607|-23.90|5.1|10600|Cúmulo globular
+M 7|Cúmulo de Ptolomeo|17.898|-34.79|3.3|980|Cúmulo abierto
+M 4|Cúmulo M 4|16.393|-26.53|5.6|7200|Cúmulo globular
+NGC 104|47 Tucanae|0.402|-72.08|4.1|14700|Cúmulo globular
+NGC 5139|Omega Centauri|13.447|-47.48|3.9|17000|Cúmulo globular
+NGC 3372|Nebulosa de Carina|10.735|-59.87|1.0|7500|Nebulosa
+LMC|Gran Nube de Magallanes|5.392|-69.76|0.9|160000|Galaxia
+SMC|Pequeña Nube de Magallanes|0.877|-72.8|2.7|200000|Galaxia
+M 13|Cúmulo de Hércules|16.695|36.46|5.8|22200|Cúmulo globular
+M 44|Pesebre|8.667|19.67|3.7|577|Cúmulo abierto
+M 57|Nebulosa del Anillo|18.893|33.03|8.8|2300|Nebulosa
+M 27|Nebulosa Dumbbell|19.994|22.72|7.5|1360|Nebulosa
+M 6|Cúmulo de la Mariposa|17.668|-32.25|4.2|1600|Cúmulo abierto
+M 20|Nebulosa Trífida|18.043|-23.03|6.3|5200|Nebulosa
+M 17|Nebulosa Omega|18.346|-16.18|6.0|5500|Nebulosa
+M 16|Nebulosa del Águila|18.313|-13.82|6.4|7000|Nebulosa
+M 41|Cúmulo M 41|6.767|-20.75|4.5|2300|Cúmulo abierto
+M 35|Cúmulo M 35|6.148|24.33|5.3|2800|Cúmulo abierto
+NGC 4755|Joyero (Kappa Crucis)|12.894|-60.35|4.2|6400|Cúmulo abierto
+NGC 253|Galaxia del Escultor|0.793|-25.29|7.1|11400000|Galaxia
+M 33|Galaxia del Triángulo|1.564|30.66|5.7|2700000|Galaxia
+M 83|Galaxia Molinete Austral|13.617|-29.87|7.5|15000000|Galaxia
+M 51|Galaxia del Remolino|13.498|47.20|8.4|23000000|Galaxia`.split('\n').map(l=>{const[c,name,ra,dec,mag,dist,t]=l.split('|');return{id:c,name,ra:+ra,dec:+dec,mag:+mag,dist:+dist,type:'d',sub:c+' · '+t}});
+const O=[...CON,...DSO,...SL],ALL=[...Object.values(ST),...CON,...DSO];
+const TY={c:'Constelación',d:'Espacio profundo',s:'Estrella'};
+let lat=-17.8633,lon=-66.3136,mins=240,sel=CON[0],tab='all',playing=false,fly=null,L0=0,L=0,lt=0;
+const view={az:200,alt:35,z:1},opt={lines:1,names:1,mw:1};
+// astronomía
+function jdAt(m){const[y,mo,d]=$('#dt').value.split('-').map(Number),tz=Math.round(lon/15);return(Date.UTC(y,mo-1,d,18,0)+m*6e4-tz*36e5)/864e5+2440587.5}
+const lstAt=m=>((280.46061837+360.98564736629*(jdAt(m)-2451545)+lon)%360+360)%360;
+function aa(ra,dec,Ls){const H=(Ls-ra*15)*D,d=dec*D,p=lat*D,sd=Math.sin(d),cd=Math.cos(d),sp=Math.sin(p),cp=Math.cos(p),cH=Math.cos(H);return[Math.atan2(-Math.sin(H)*cd,sd*cp-cd*sp*cH),Math.asin(sd*sp+cd*cp*cH)]}
+const altD=(o,m)=>aa(o.ra,o.dec,L0+.25068447733*m)[1]/D;
+const tm=m=>{const x=(1080+Math.round(m))%1440;return pad(x/60|0)+':'+pad(x%60)};
+// datos procedurales
+function rnd(s){return()=>{s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const r=rnd(7),gn=()=>Math.sqrt(-2*Math.log(1-r()))*Math.cos(6.2832*r());
+const BG=Array.from({length:900},()=>({ra:r()*24,dec:Math.asin(r()*2-1)/D,m:3.6+r()*2.8}));
+const MA=[],MB=[];
+for(let i=0;i<5500;i++){const l=r()<.5?r()*360:gn()*38,core=Math.exp(-((l/40)**2)),b=gn()*(4+7*Math.exp(-((l/35)**2))),lN=122.93192*D,dG=27.12825*D,ld=l*D,bd=b*D;
+ const dec=Math.asin(Math.sin(dG)*Math.sin(bd)+Math.cos(dG)*Math.cos(bd)*Math.cos(lN-ld)),ra=192.85948*D+Math.atan2(Math.cos(bd)*Math.sin(lN-ld),Math.cos(dG)*Math.sin(bd)-Math.sin(dG)*Math.cos(bd)*Math.cos(lN-ld));
+ (core>.35&&r()<.8?MB:MA).push({ra:(((ra/D)%360)+360)%360/15,dec:dec/D})}
+// canvas
+const cv=$('#sky'),g=cv.getContext('2d');let W=1,H=1,dpr=1,hits=[],mouse=null;
+new ResizeObserver(()=>{dpr=devicePixelRatio||1;W=cv.clientWidth;H=cv.clientHeight;cv.width=W*dpr;cv.height=H*dpr}).observe(cv);
+const norm=a=>((a%360)+360)%360;
+function draw(t){
+ g.setTransform(dpr,0,0,dpr,0,0);
+ const bg=g.createRadialGradient(W/2,H*.4,0,W/2,H*.4,Math.max(W,H)*.8);bg.addColorStop(0,'#170e33');bg.addColorStop(1,'#05030c');g.fillStyle=bg;g.fillRect(0,0,W,H);
+ const sc=Math.min(W,H)*.55*view.z,cx=W/2,cy=H/2,a0=view.az*D,sa0=Math.sin(view.alt*D),ca0=Math.cos(view.alt*D);
+ const P=(az,al)=>{const sA=Math.sin(al),cA=Math.cos(al),dz=az-a0,cd=Math.cos(dz),cc=sa0*sA+ca0*cA*cd;if(cc<-.8)return null;const k=2/(1+cc);return[cx+k*cA*Math.sin(dz)*sc,cy-k*(ca0*sA-sa0*cA*cd)*sc]};
+ hits=[];
+ if(opt.mw){g.globalCompositeOperation='lighter';const s=Math.max(2,2.8*Math.min(view.z,3));
+  [[MA,'rgba(150,125,255,.05)'],[MB,'rgba(225,140,255,.06)']].forEach(([arr,c])=>{g.fillStyle=c;for(const q of arr){const[az,al]=aa(q.ra,q.dec,L);if(al<-.02)continue;const p=P(az,al);if(p)g.fillRect(p[0]-s/2,p[1]-s/2,s,s)}});g.globalCompositeOperation='source-over'}
+ // horizonte
+ g.strokeStyle='rgba(196,181,253,.4)';g.lineWidth=1.2;g.beginPath();let pen=false;
+ for(let a=0;a<=360;a+=3){const p=P(a*D,0);if(!p){pen=false;continue}pen?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]);pen=true}g.stroke();
+ g.font='700 11px Space Grotesk,sans-serif';g.textAlign='center';
+ ['N','NE','E','SE','S','SO','O','NO'].forEach((n,i)=>{const p=P(i*45*D,.03);if(!p)return;g.fillStyle=i?'rgba(196,181,253,.85)':'#e879f9';g.fillText(n,p[0],p[1]+16)});
+ // constelaciones
+ if(opt.lines)CON.forEach(c=>{const on=c===sel;g.strokeStyle=on?'rgba(232,121,249,.9)':'rgba(168,140,255,.32)';g.lineWidth=on?1.6:1;g.beginPath();c.lines.forEach(([A,B])=>{if(A.al<-.05||B.al<-.05)return;const p=P(A.az,A.al),q=P(B.az,B.al);if(p&&q){g.moveTo(p[0],p[1]);g.lineTo(q[0],q[1])}});g.stroke()});
+ // estrellas
+ const zf=.7+.3*Math.min(view.z,3);
+ g.fillStyle='#fff';
+ for(const b of BG){const[az,al]=aa(b.ra,b.dec,L);if(al<0)continue;const p=P(az,al);if(!p)continue;g.globalAlpha=Math.min(.75,(6.8-b.m)*.22);g.beginPath();g.arc(p[0],p[1],(6.5-b.m)*.28*zf+.25,0,7);g.fill()}
+ g.globalAlpha=1;
+ g.textAlign='left';g.font='500 11px Space Grotesk,sans-serif';
+ for(const s of Object.values(ST)){if(s.al<0)continue;const p=P(s.az,s.al);if(!p)continue;const rr=Math.max(.8,(5.2-s.mag)*.5)*zf;
+  if(s.mag<1.8){g.fillStyle='rgba(190,160,255,.2)';g.beginPath();g.arc(p[0],p[1],rr*3.4,0,7);g.fill()}
+  g.fillStyle='#fff';g.beginPath();g.arc(p[0],p[1],rr,0,7);g.fill();
+  if(SL.includes(s))hits.push([p[0],p[1],s]);
+  if(opt.names&&(s.mag<1.9||view.z>2&&s.mag<2.8)){g.fillStyle='rgba(225,215,255,.78)';g.fillText(s.name,p[0]+rr+5,p[1]+3)}}
+ // espacio profundo
+ for(const o of DSO){if(o.al<0)continue;const p=P(o.az,o.al);if(!p)continue;
+  g.fillStyle='rgba(168,85,247,.25)';g.beginPath();g.arc(p[0],p[1],13,0,7);g.fill();
+  g.strokeStyle='rgba(232,121,249,.9)';g.lineWidth=1.3;g.beginPath();g.arc(p[0],p[1],7,0,7);g.stroke();
+  g.fillStyle='#f0abfc';g.beginPath();g.arc(p[0],p[1],2.6,0,7);g.fill();hits.push([p[0],p[1],o]);
+  if(opt.names){g.fillStyle='rgba(225,215,255,.8)';g.textAlign='center';g.fillText(o.name,p[0],p[1]+25);g.textAlign='left'}}
+ for(const c of CON){if(c.al<0)continue;const p=P(c.az,c.al);if(!p)continue;hits.push([p[0],p[1],c]);
+  if(opt.names&&opt.lines){g.fillStyle=c===sel?'rgba(240,171,252,.95)':'rgba(168,140,255,.6)';g.font='700 10px Space Grotesk,sans-serif';g.textAlign='center';g.fillText(c.name.toUpperCase().split('').join('\u200a'),p[0],p[1]);g.textAlign='left';g.font='500 11px Space Grotesk,sans-serif'}}
+ // selección
+ const p=P(sel.az,sel.al);
+ if(p&&sel.al>-.05&&sel.type!=='c'){const k=10+4*Math.sin(t/260);g.strokeStyle='rgba(255,255,255,.75)';g.lineWidth=1.4;g.beginPath();g.arc(p[0],p[1],k+6,0,7);g.stroke();g.fillStyle='#fff';g.shadowColor='#e879f9';g.shadowBlur=14;g.beginPath();g.arc(p[0],p[1],3.4,0,7);g.fill();g.shadowBlur=0}
+ compass()}
+function compass(){const c=$('#cmp').getContext('2d'),R=62,m=84;c.setTransform(1,0,0,1,0,0);c.clearRect(0,0,168,168);c.translate(m,m);
+ c.strokeStyle='rgba(196,181,253,.4)';c.lineWidth=1.5;c.beginPath();c.arc(0,0,R,0,7);c.stroke();
+ c.font='700 15px Space Grotesk,sans-serif';c.textAlign='center';c.textBaseline='middle';
+ [['N',0],['E',90],['S',180],['O',270]].forEach(([n,a])=>{const q=(a-view.az)*D;c.fillStyle=a?'#c4b5fd':'#e879f9';c.fillText(n,Math.sin(q)*(R-16),-Math.cos(q)*(R-16))});
+ if(sel.az!=null){const q=sel.az-view.az*D;c.fillStyle='#fff';c.shadowColor='#e879f9';c.shadowBlur=8;c.beginPath();c.arc(Math.sin(q)*R,-Math.cos(q)*R,5,0,7);c.fill();c.shadowBlur=0}
+ c.fillStyle='#e879f9';c.beginPath();c.moveTo(0,-14);c.lineTo(6,6);c.lineTo(-6,6);c.fill()}
+// estado
+function upd(){L0=lstAt(0);L=L0+.25068447733*mins;for(const o of ALL){const[a,b]=aa(o.ra,o.dec,L);o.az=a;o.al=b}}
+const stt=a=>a>15?['VISIBLE','ok']:a>0?['BAJO','']:['NO VISIBLE','no'];
+const fd=d=>!d?'—':d>=1e6?(d/1e6).toFixed(1).replace('.',',')+' M años luz':d.toLocaleString('es')+' años luz';
+function list(){const q=$('#q').value.toLowerCase(),LS=$('#list'),sy=LS.scrollTop;const html=O.filter(o=>(tab=='all'||o.type==tab)&&o.name.toLowerCase().includes(q)).map(o=>{const s=stt(o.al/D);return`<div class="it${o===sel?' on':''}" data-i="${O.indexOf(o)}"><div><b>${o.name}</b><small>${o.sub}</small></div><span class="pill ${s[1]}">${s[0]}</span></div>`}).join('');if(html===list.h)return;list.h=html;LS.innerHTML=html;LS.scrollTop=sy}
+function ui(){
+ const n=O.filter(o=>o.al>0).length;$('#nv').textContent=n;$('#nt').textContent=O.length;$('#bv').style.width=n/O.length*100+'%';
+ $('#bt').textContent=n/O.length>.6?'Cielo abundante':n/O.length>.35?'Buena variedad de objetos':'Pocos objetos catalogados arriba';
+ const h=L/15;$('#lst').textContent=pad(h|0)+':'+pad((h%1)*60|0);
+ const gc={ra:17.76,dec:-28.94},gl=aa(gc.ra,gc.dec,L)[1]/D;$('#mwa').textContent=gl>0?'Centro a '+Math.round(gl)+'°':'Bajo horizonte';
+ const tz=Math.round(lon/15);$('#clock').textContent=tm(mins);$('#utc').textContent='● Hora local · UTC'+(tz<0?'−':'+')+Math.abs(tz);
+ const o=sel,al=o.al/D,az=norm(o.az/D);
+ $('#dTipo').textContent=TY[o.type];$('#dName').textContent=o.name;$('#dSub').textContent=o.sub;
+ $('#dAlt').textContent=al.toFixed(0)+'°';$('#dAz').textContent=az.toFixed(0)+'°';$('#dMag').textContent=o.mag==null?'—':o.mag.toFixed(1);$('#dDist').textContent=o.type=='c'?'—':fd(o.dist);
+ const s=stt(al),e=$('#dState');e.textContent=s[0];e.className='pill '+s[1];
+ // curva de altura
+ const c=$('#ch'),x=c.getContext('2d'),w=c.width=c.clientWidth*dpr,hh=c.height=96*dpr;x.scale(dpr,dpr);const cw=c.clientWidth,ch=96,av=[];
+ for(let i=0;i<=72;i++)av.push(altD(o,i*10));
+ x.fillStyle='rgba(168,85,247,.28)';x.strokeStyle='#e879f9';x.lineWidth=1.6;x.beginPath();x.moveTo(0,ch-16);
+ av.forEach((a,i)=>x.lineTo(i/72*cw,ch-16-Math.max(a,0)/90*(ch-24)));x.lineTo(cw,ch-16);x.fill();
+ x.beginPath();av.forEach((a,i)=>{const y=ch-16-Math.max(a,0)/90*(ch-24);i?x.lineTo(i/72*cw,y):x.moveTo(0,y)});x.stroke();
+ x.strokeStyle='rgba(150,120,255,.4)';x.setLineDash([3,3]);x.beginPath();x.moveTo(0,ch-16);x.lineTo(cw,ch-16);x.stroke();x.setLineDash([]);
+ x.strokeStyle='#fff';x.beginPath();x.moveTo(mins/720*cw,0);x.lineTo(mins/720*cw,ch-16);x.stroke();
+ x.fillStyle='#8d82b5';x.font='10px Space Grotesk';x.textAlign='center';[0,180,360,540,720].forEach(m=>x.fillText(tm(m).slice(0,2)+'h',Math.min(Math.max(m/720*cw,10),cw-10),ch-3));
+ // salida y puesta
+ const A=[];for(let m=0;m<=1440;m+=10)A.push(altD(o,m));let ri='—',se='—',cu=A.indexOf(Math.max(...A))*10;
+ for(let i=1;i<A.length;i++){if(A[i-1]<0&&A[i]>=0&&ri=='—')ri=tm(i*10);if(A[i-1]>=0&&A[i]<0&&se=='—')se=tm(i*10)}
+ if(Math.min(...A)>=0){ri='Circumpolar';se='Siempre arriba'}else if(Math.max(...A)<0){ri='No sale';se='—'}
+ $('#tR').textContent=ri;$('#tS').textContent=se;$('#tC').textContent=Math.max(...A)<0?'—':tm(cu)+' · '+Math.max(...A).toFixed(0)+'°';
+ let bm=0,bv=-99;for(let m=0;m<=720;m+=10){const a=altD(o,m);if(a>bv){bv=a;bm=m}}
+ $('#tB').textContent=bv<0?'No visible esta noche':tm(bm)+' · '+bv.toFixed(0)+'°';
+ list();
+ const ar=Math.round(norm(view.az)),cd=['N','NE','E','SE','S','SO','O','NO'][Math.round(ar/45)%8];$('#cb').textContent=cd+' '+ar+'°';$('#ca').textContent='Altura '+Math.round(view.alt)+'°';
+}
+function choose(o){sel=o;upd();fly={az:norm(o.az/D),alt:Math.max(o.al/D,8),z:o.type=='c'?1.3:2.3};ui()}
+// bucle
+function frame(t){
+ if(playing){mins+=.8;if(mins>720)mins=0;$('#rg').value=mins}
+ if(fly){let d=((fly.az-view.az+540)%360)-180;view.az=norm(view.az+d*.1);view.alt+=(fly.alt-view.alt)*.1;view.z+=(fly.z-view.z)*.08;if(Math.abs(d)<.1&&Math.abs(fly.alt-view.alt)<.1)fly=null}
+ upd();draw(t);if(t-lt>350){lt=t;ui()}requestAnimationFrame(frame)}
+// eventos
+let drag=null,moved=0;
+cv.addEventListener('mousedown',e=>{drag=[e.clientX,e.clientY];moved=0;fly=null;cv.classList.add('dr')});
+addEventListener('mouseup',e=>{if(drag&&moved<4){const h=near(e);if(h)choose(h)}drag=null;cv.classList.remove('dr')});
+function near(e){const r=cv.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;let b=null,bd=18;for(const h of hits){const d=Math.hypot(h[0]-x,h[1]-y);if(d<bd){bd=d;b=h[2]}}return b}
+addEventListener('mousemove',e=>{const sc=Math.min(W,H)*.55*view.z;
+ if(drag){const dx=e.clientX-drag[0],dy=e.clientY-drag[1];moved+=Math.abs(dx)+Math.abs(dy);drag=[e.clientX,e.clientY];view.az=norm(view.az-dx/sc/D/Math.max(.3,Math.cos(view.alt*D)));view.alt=Math.max(-10,Math.min(90,view.alt+dy/sc/D));$('#tip').style.display='none';return}
+ const r=cv.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom){$('#tip').style.display='none';return}
+ const h=near(e),t=$('#tip');if(h){t.style.display='block';t.style.left=e.clientX-r.left+14+'px';t.style.top=e.clientY-r.top+14+'px';t.textContent=h.name+' · '+Math.round(h.al/D)+'°'}else t.style.display='none'});
+cv.addEventListener('wheel',e=>{e.preventDefault();fly=null;view.z=Math.max(.5,Math.min(10,view.z*Math.exp(-e.deltaY*.0012)))},{passive:false});
+$('#list').addEventListener('click',e=>{const i=e.target.closest('.it');if(i)choose(O[+i.dataset.i])});
+$('#tabs').addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;tab=b.dataset.t;document.querySelectorAll('#tabs .chip').forEach(c=>c.classList.toggle('on',c===b));list()});
+$('#tools').addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;opt[b.dataset.k]^=1;b.classList.toggle('on',!!opt[b.dataset.k])});
+$('#q').addEventListener('input',list);
+$('#close').onclick=()=>parent.postMessage({type:'stellavista:close-planetario'},'*');
+$('#go').onclick=()=>choose(sel);
+$('#rg').oninput=e=>{mins=+e.target.value;upd();ui()};
+$('#dt').onchange=()=>{upd();ui()};
+$('#pl').onclick=()=>{playing=!playing;$('#pl').textContent=playing?'❚❚':'▶'};
+function setLoc(a,b){lat=+a;lon=+b;$('#lat').value=a;$('#lon').value=b;upd();ui()}
+$('#lat').onchange=e=>setLoc(e.target.value,lon);$('#lon').onchange=e=>setLoc(lat,e.target.value);
+$('#city').onchange=e=>setLoc(...e.target.value.split(','));
+function now(){const tz=Math.round(lon/15),l=new Date(Date.now()+tz*36e5),h=l.getUTCHours()*60+l.getUTCMinutes();let d=new Date(l);
+ if(h>=1080)mins=h-1080;else if(h<360){mins=h+360;d=new Date(l-864e5)}else mins=0;
+ $('#dt').value=d.getUTCFullYear()+'-'+pad(d.getUTCMonth()+1)+'-'+pad(d.getUTCDate());$('#rg').value=mins;upd();ui()}
+$('#now').onclick=now;
+now();choose(CON[0]);requestAnimationFrame(frame);
+</script></body></html>
